@@ -113,7 +113,7 @@ Técnica alternativa, no desarrollada en detalle: **vuelta corta en cuña** (sho
 
 ## 10. Entallado, manga y cuellera
 
-Herramienta común: `filas disponibles ÷ eventos de cambio = cada cuántas filas actuar` (eventos = pts a cambiar / 2 si el cambio es simétrico en 2 puntos). El resto no entero se absorbe en las filas lisas de alrededor.
+Herramienta común: `cadencia_primaria = techo(filas disponibles ÷ eventos de cambio)` (eventos = pts a cambiar / 2 si el cambio es simétrico en 2 puntos). El resto no se absorbe en filas lisas sueltas: se resuelve con **cadencia mixta**, ejecutando una minoría de eventos a `cadencia_primaria - 1` (más frecuente) hasta que la suma cierre exacto contra las filas disponibles. Es lo que reproduce los tres ejemplos numéricos siguientes.
 
 **Entallado** (opcional, cuerpo bajo la sisa, desde 208 pts): axila→cintura (176 pts, −32): 16 eventos / 42 filas → cada 3 filas. Cintura→ruedo (212 pts, +36): 18 eventos / 34 filas → cada 2 filas. No aplica a siluetas rectas (drop shoulder).
 

@@ -55,6 +55,9 @@ export function computeTaper(
 
   const direction = totalStitchChange > 0 ? 1 : -1;
   const primaryCadence = Math.ceil(availableRows / events);
+  // reducedCadence can be 0 (when events === availableRows, every row is a shaping row),
+  // but that's harmless: reducedCadenceEventCount is always 0 in that same case, so
+  // cadenceForEvent below never actually returns 0 as a cadence to step by.
   const reducedCadence = primaryCadence - 1;
   const reducedCadenceEventCount = events * primaryCadence - availableRows;
   const primaryCadenceEventCount = events - reducedCadenceEventCount;

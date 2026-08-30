@@ -57,6 +57,19 @@ describe("computeTaper", () => {
     });
   });
 
+  it("handles the boundary where every row is a shaping row (events === availableRows)", () => {
+    const result = computeTaper(10, 0, 5);
+
+    expect(result.events).toBe(5);
+    expect(result.primaryCadence).toBe(1);
+    expect(result.reducedCadence).toBe(0);
+    expect(result.reducedCadenceEventCount).toBe(0);
+    expect(result.primaryCadenceEventCount).toBe(5);
+    expect(result.finalStitches).toBe(0);
+    expect(result.schedule).toHaveLength(5);
+    expect(result.schedule.every((row) => row.isShapingRow)).toBe(true);
+  });
+
   it("returns a trivial no-shaping result when start and end stitches are equal", () => {
     const result = computeTaper(50, 50, 10);
 
