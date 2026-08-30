@@ -78,17 +78,32 @@ Pasos:
 10. El signo de `totalStitchChange` determina si cada evento suma o resta 2
     puntos.
 11. **Posición exacta de cada fila de cambio** (ambigüedad a resolver
-    explícitamente): las filas de cambio ocurren en posiciones acumulativas,
-    nunca en la fila 1 — igual que el aumento raglan del canesú, que
-    tampoco actúa en la primera ronda. La primera fila de cambio ocurre en
-    `rowNumber = cadencia_del_evento_1`; cada fila de cambio siguiente
-    ocurre `cadencia_del_evento_i` filas después de la anterior, usando
-    `reducedCadence` para los primeros `reducedCadenceEventCount` eventos y
-    `primaryCadence` para el resto. Ejemplo (axila→cintura: 6 eventos a
-    cadencia 2, luego 10 a cadencia 3): filas de cambio en 2, 4, 6, 8, 10,
-    12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42 — la última cae exactamente
-    en la fila 42 (última fila disponible), lo cual es intencional: el
-    tramo termina justo en el evento final, sin filas lisas de cola.
+    explícitamente): las filas de cambio ocurren en posiciones acumulativas.
+    La primera fila de cambio ocurre en `rowNumber = cadencia_del_evento_1`
+    (que puede ser la fila 1 si esa cadencia es 1 — "cada 1 fila" significa
+    literalmente todas, sin fila lisa previa); cada fila de cambio
+    siguiente ocurre `cadencia_del_evento_i` filas después de la anterior,
+    usando `reducedCadence` para los primeros `reducedCadenceEventCount`
+    eventos y `primaryCadence` para el resto.
+
+    **Corrección detectada al planificar la implementación:** una versión
+    anterior de esta sección afirmaba que la primera fila de cambio "nunca"
+    cae en la fila 1, por analogía con el aumento raglan del canesú. Eso es
+    incorrecto en general — es cierto en el ejemplo de axila→cintura (donde
+    `reducedCadence=2`), pero falso en cintura→ruedo, donde
+    `reducedCadence=1` y por lo tanto la fila 1 sí es de cambio. La regla
+    correcta es la del párrafo anterior, sin excepción para la fila 1.
+
+    Ejemplo axila→cintura (6 eventos a cadencia 2, luego 10 a cadencia 3):
+    filas de cambio en 2, 4, 6, 8, 10, 12, 15, 18, 21, 24, 27, 30, 33, 36,
+    39, 42 — la última cae exactamente en la fila 42 (última fila
+    disponible), lo cual es intencional: el tramo termina justo en el
+    evento final, sin filas lisas de cola.
+
+    Ejemplo cintura→ruedo (2 eventos a cadencia 1, luego 16 a cadencia 2):
+    filas de cambio en 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26,
+    28, 30, 32, 34 — la primera cae en la fila 1, y la última en la fila 34
+    (última fila disponible).
 
 ### Verificación a mano contra los 3 ejemplos del doc
 
