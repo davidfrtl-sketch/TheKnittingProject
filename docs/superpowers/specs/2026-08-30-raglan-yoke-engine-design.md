@@ -111,8 +111,10 @@ de `frontStartStitchesPerHalf`.
 - **Cierre del escote**: `bindOnAtJoin = neckGapWidthSts -
   necklineIncreaseTotalSts`, donde `neckGapWidthSts =
   stitchesForCm(gauge, neckWidthBackCm)` y `necklineIncreaseTotalSts =
-  floor(frontOpenRounds / necklineIncreaseCadence) * 2` (2 = 1 punto por
-  lado). Si `bindOnAtJoin` da negativo, es un conflicto de diseño (delantero
+  ceil(frontOpenRounds / necklineIncreaseCadence) * 2` (2 = 1 punto por
+  lado; el conteo es la cantidad de rondas `r` en `1..frontOpenRounds` donde
+  `(r - 1) % necklineIncreaseCadence === 0`, que equivale a la fórmula del
+  techo). Si `bindOnAtJoin` da negativo, es un conflicto de diseño (delantero
   abierto muy pocas rondas para la cadencia elegida) — se valida en el
   límite del engine y se reporta como error, no se corrige silenciosamente.
 

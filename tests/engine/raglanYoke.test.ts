@@ -57,6 +57,28 @@ describe("computeRaglanYoke", () => {
     });
   });
 
+  it("handles the front join landing on the same round as a raglan increase", () => {
+    const necklineParams: NecklineParams = {
+      frontOpenRounds: 13,
+      frontStartStitchesPerHalf: 1,
+      necklineIncreaseCadence: 1,
+    };
+
+    const result = computeRaglanYoke(gauge, ease, measurements, necklineParams, construction);
+
+    const joinRound = result.schedule.find((round) =>
+      round.events.some((event) => event.type === "frontJoin")
+    );
+    expect(joinRound?.roundNumber).toBe(14);
+    expect(joinRound?.events).toContainEqual({ type: "frontJoin", boundOnStitches: 6 });
+    expect(joinRound?.events).toContainEqual({
+      type: "raglanIncrease",
+      deltaPerPiece: { back: 2, front: 2, sleeveLeft: 2, sleeveRight: 2 },
+    });
+
+    expect(result.finalStitchCounts.front).toBe(90);
+  });
+
   it("throws when the neckline increases alone exceed the back neck width", () => {
     const necklineParams: NecklineParams = {
       frontOpenRounds: 20,

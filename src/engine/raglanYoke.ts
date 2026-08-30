@@ -53,13 +53,29 @@ export function computeRaglanYoke(
   const totalYokeRounds = rowsForCm(gauge, measurements.armholeDepthCm);
   const { frontOpenRounds, frontStartStitchesPerHalf, necklineIncreaseCadence } = necklineParams;
 
+  if (necklineIncreaseCadence <= 0) {
+    throw new Error(
+      `necklineIncreaseCadence debe ser un número positivo (recibido: ${necklineIncreaseCadence}).`
+    );
+  }
+  if (frontOpenRounds >= totalYokeRounds) {
+    throw new Error(
+      `El delantero no puede quedar abierto tantas rondas: frontOpenRounds (${frontOpenRounds}) ` +
+        `debe ser menor que el total de rondas del canesú (${totalYokeRounds}).`
+    );
+  }
+
   const initialBack = stitchesForCm(gauge, measurements.neckWidthBackCm);
   const initialSleeve = constructionParams.initialSleeveStitchesPerSleeve;
   const neckGapWidthSts = initialBack;
 
+  function isNecklineIncreaseRound(roundNumber: number): boolean {
+    return roundNumber <= frontOpenRounds && (roundNumber - 1) % necklineIncreaseCadence === 0;
+  }
+
   let necklineIncreaseRoundCount = 0;
   for (let roundNumber = 1; roundNumber <= frontOpenRounds; roundNumber++) {
-    if ((roundNumber - 1) % necklineIncreaseCadence === 0) {
+    if (isNecklineIncreaseRound(roundNumber)) {
       necklineIncreaseRoundCount += 1;
     }
   }
@@ -86,17 +102,15 @@ export function computeRaglanYoke(
   for (let roundNumber = 1; roundNumber <= totalYokeRounds; roundNumber++) {
     const events: RaglanYokeRoundEvent[] = [];
 
+    // Orden load-bearing: el join debe ocurrir antes del aumento raglan para que,
+    // en una ronda donde coinciden, el aumento se aplique al delantero ya unido.
     if (roundNumber === frontOpenRounds + 1 && front.open) {
       const combined: number = front.left + front.right + boundOnStitches;
       events.push({ type: "frontJoin", boundOnStitches });
       front = { open: false, combined };
     }
 
-    if (
-      front.open &&
-      roundNumber <= frontOpenRounds &&
-      (roundNumber - 1) % necklineIncreaseCadence === 0
-    ) {
+    if (front.open && isNecklineIncreaseRound(roundNumber)) {
       front = { open: true, left: front.left + 1, right: front.right + 1 };
       events.push({ type: "necklineIncrease", deltaPerSide: { left: 1, right: 1 } });
     }
@@ -119,7 +133,7 @@ export function computeRaglanYoke(
     schedule.push({
       roundNumber,
       events,
-      stitchCounts: { back, front, sleeveLeft, sleeveRight },
+      stitchCounts: { back, front: { ...front }, sleeveLeft, sleeveRight },
     });
   }
 

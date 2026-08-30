@@ -10,9 +10,9 @@ Software abierto de diseño de patrones de sweaters tejidos a mano (dos agujas).
   técnicas (tejido a máquina, crochet, bordado) quedan documentadas como
   referencia, pero fuera del alcance inicial.
 
-Por ahora este repositorio contiene solo el esqueleto del proyecto: todavía
-no hay implementado ningún cálculo de dominio (raglan, grading, entallado,
-manga).
+Por ahora este repositorio implementa el cálculo del canesú raglan (escote
+redondo, talla única). El entallado del cuerpo y la manga, el grading
+multi-talla y los renderizadores de salida todavía están pendientes.
 
 ## Estructura
 
