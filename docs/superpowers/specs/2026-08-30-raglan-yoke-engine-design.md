@@ -41,12 +41,16 @@ la lógica de conversión en el engine.
 
 ### `Ease`
 ```ts
-type Ease = { easeCm: number };
+type Ease = { bodyEaseCm: number; sleeveEaseCm: number };
 ```
-Un valor de cm explícito (puede ser negativo). Las categorías del Craft Yarn
-Council (muy ajustado, ajustado, clásico, holgado, oversized) quedan como
-referencia/documentación en comentarios, no como enum forzado — la decisión
-final siempre es un cm concreto.
+Valores de cm explícitos (pueden ser negativos), separados para cuerpo y
+manga. **Corrección detectada al planificar la implementación:** el ejemplo
+numérico de la sección 8 usa 8cm de ease para el pecho y 6cm para el bíceps
+dentro de la misma categoría "clásico" — un solo `easeCm` no puede
+representar eso. Las categorías del Craft Yarn Council (muy ajustado,
+ajustado, clásico, holgado, oversized) quedan como referencia/documentación
+en comentarios, no como enum forzado — la decisión final siempre son cm
+concretos, uno por zona del cuerpo.
 
 ### `YokeMeasurements`
 Subconjunto del "esquema" completo (CLAUDE.md), acotado a lo que necesita el
@@ -150,8 +154,8 @@ type RaglanYokeResult = {
 
 `armpitShortfall` = objetivo por pieza − final real. Objetivo de
 espalda/delantero = mitad de los puntos de pecho objetivo
-(`stitchesForCm(gauge, chestCm + easeCm) / 2`, redondeado); objetivo de manga
-= `stitchesForCm(gauge, bicepCm + easeCm)`.
+(`stitchesForCm(gauge, chestCm + bodyEaseCm) / 2`, redondeado); objetivo de
+manga = `stitchesForCm(gauge, bicepCm + sleeveEaseCm)`.
 
 ## Testing
 
