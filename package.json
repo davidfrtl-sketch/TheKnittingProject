@@ -1,0 +1,16 @@
+{
+  "name": "knitting-project",
+  "version": "0.1.0",
+  "description": "Software abierto de diseño de patrones de sweaters tejidos a mano",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}
