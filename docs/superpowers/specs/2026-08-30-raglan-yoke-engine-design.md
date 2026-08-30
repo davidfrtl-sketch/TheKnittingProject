@@ -75,6 +75,22 @@ dominio (solo se infiere del ejemplo numérico de la sección 9, donde resulta
 ser 1) — se deja como parámetro configurable en vez de asumir una regla
 general no verificada.
 
+### `YokeConstructionParams`
+```ts
+type YokeConstructionParams = {
+  initialSleeveStitchesPerSleeve: number; // ej. 8, ver nota abajo
+};
+```
+**Corrección detectada al planificar la implementación:** el doc de dominio
+da el punto de partida de manga (8 pts en el ejemplo) sin una fórmula que lo
+derive de las medidas — no sale del bíceps objetivo (ese se alcanza recién
+al final del canesú) ni de ninguna otra medida del esquema. Es una decisión
+de diseño del patronista (típicamente una fracción chica del bíceps
+objetivo), así que se modela como parámetro explícito, igual que
+`frontOpenRounds`. El punto de partida de espalda **sí** sale de una medida:
+`stitchesForCm(gauge, neckWidthBackCm)`. El de cada mitad del delantero sale
+de `frontStartStitchesPerHalf`.
+
 ## Motor de cálculo (`src/engine`)
 
 ### Dos procesos de aumento en paralelo
