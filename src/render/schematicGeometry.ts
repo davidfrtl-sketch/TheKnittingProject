@@ -50,6 +50,8 @@ function computeBackGeometry(plan: GarmentPlan, gauge: Gauge): PanelGeometry {
       gauge,
       plan.yoke.finalStitchCounts.back + plan.yoke.armpitShortfall.back
     ),
+    // Tapers describe the combined body tube (back + front joined); one panel's flat width is half.
+    // Unlike underarmWidthCm above, which reads a piece's own stitch count directly—back/front are separate flat panels, not a tube.
     waistWidthCm: cmForStitches(gauge, plan.bodyWaistTaper.finalStitches) / 2,
     hemWidthCm: cmForStitches(gauge, plan.bodyHemTaper.finalStitches) / 2,
     yokeHeightCm: cmForRows(gauge, plan.yoke.schedule.length),
@@ -102,6 +104,8 @@ function computeSleeveGeometry(
       : plan.axilaJoin.sleeveRightStartStitches;
   const taper = side === "sleeveLeft" ? plan.sleeveLeftTaper : plan.sleeveRightTaper;
 
+  // Sleeve stitch counts are full tube circumferences; flat width for drawing is circumference ÷ 2.
+  // axilaAdditionCircumferenceCm is the raw circumference increase itself (not a flat width), so it stays undivided.
   return {
     topWidthCm: cmForStitches(gauge, castOn) / 2,
     yokeEndWidthCm: cmForStitches(gauge, yokeEnd) / 2,
