@@ -38,6 +38,22 @@ Para chequeo de tipos:
 npm run typecheck
 ```
 
+## Herramienta web interactiva
+
+`index.html` es la herramienta interactiva del navegador (formulario de
+medidas/gauge/ease que llama al motor y renderiza el esquema SVG y las
+instrucciones). Antes de abrirla hay que compilar `src/` a `dist/`:
+
+```bash
+npm run build
+```
+
+`dist/` está en `.gitignore`, así que en un clon nuevo el botón "Calcular"
+no hace nada hasta correr `npm run build`. Además, `index.html` debe servirse
+por HTTP (por ejemplo `npx serve .` o `python3 -m http.server`) y no abrirse
+directamente como archivo `file://`, porque los navegadores bloquean la
+carga de módulos ES (`<script type="module">`) desde `file://`.
+
 ## Documentación de dominio
 
 Ver [`docs/tejido-y-patronaje.md`](docs/tejido-y-patronaje.md) para el

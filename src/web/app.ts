@@ -13,7 +13,11 @@ function getNumberInput(id: string): number {
   if (!(el instanceof HTMLInputElement)) {
     throw new Error(`No se encontró el campo "${id}" en el formulario.`);
   }
-  return el.valueAsNumber;
+  const value = el.valueAsNumber;
+  if (!Number.isFinite(value)) {
+    throw new Error(`El campo "${id}" debe tener un número válido.`);
+  }
+  return value;
 }
 
 function calculate(): void {
