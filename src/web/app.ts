@@ -176,6 +176,11 @@ function setupChartEditor(): void {
 
   if (resizeButton) {
     resizeButton.addEventListener("click", () => {
+      const errorBox = document.getElementById("error-box");
+      if (errorBox) {
+        errorBox.hidden = true;
+        errorBox.textContent = "";
+      }
       try {
         const rows = getNumberInput("chart-rows");
         const cols = getNumberInput("chart-cols");

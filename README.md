@@ -11,9 +11,10 @@ Software abierto de diseño de patrones de sweaters tejidos a mano (dos agujas).
   referencia, pero fuera del alcance inicial.
 
 Por ahora este repositorio implementa el cálculo del canesú raglan (escote
-redondo, talla única) y el entallado del cuerpo y la manga. El renderizador
-de instrucciones escritas ya existe (`src/render/`); el grading multi-talla
-y el renderizador gráfico (símbolos de punto) todavía están pendientes.
+redondo, talla única) y el entallado del cuerpo y la manga. Los dos
+renderizadores de salida ya existen (`src/render/`): instrucciones escritas
+y gráfico de puntos (símbolos de punto); el grading multi-talla todavía
+está pendiente.
 
 ## Estructura
 
@@ -42,7 +43,9 @@ npm run typecheck
 
 `index.html` es la herramienta interactiva del navegador (formulario de
 medidas/gauge/ease que llama al motor y renderiza el esquema SVG y las
-instrucciones). Antes de abrirla hay que compilar `src/` a `dist/`:
+instrucciones), y además incluye un editor de gráfico de puntos (stitch
+chart) para armar y previsualizar motivos de punto celda por celda. Antes
+de abrirla hay que compilar `src/` a `dist/`:
 
 ```bash
 npm run build
