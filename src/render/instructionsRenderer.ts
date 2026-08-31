@@ -1,6 +1,6 @@
-import type { GarmentPlan } from "./garmentPlan.js";
-import type { RaglanYokeRoundEvent } from "./raglanYoke.js";
-import type { TaperResult } from "./taper.js";
+import type { GarmentPlan } from "../engine/garmentPlan.js";
+import type { RaglanYokeRoundEvent } from "../engine/raglanYoke.js";
+import type { TaperResult } from "../engine/taper.js";
 
 function isFrontJoinEvent(
   event: RaglanYokeRoundEvent
@@ -86,8 +86,10 @@ function formatCadencePart(cadenceRows: number, eventCount: number): string {
 
 function renderTaperStage(label: string, startStitches: number, taper: TaperResult): string {
   if (taper.events === 0) {
+    const rowCount = taper.schedule.length;
+    const rowsWord = rowCount === 1 ? "fila" : "filas";
     return (
-      `${label}: sin cambios, se sigue tejiendo derecho durante ${taper.schedule.length} filas. ` +
+      `${label}: sin cambios, se sigue tejiendo derecho durante ${rowCount} ${rowsWord}. ` +
       `Resultado: ${taper.finalStitches} puntos.`
     );
   }

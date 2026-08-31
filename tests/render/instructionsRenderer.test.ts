@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderInstructions } from "../../src/engine/instructionsRenderer.js";
+import { renderInstructions } from "../../src/render/instructionsRenderer.js";
 import { computeGarmentPlan } from "../../src/engine/garmentPlan.js";
 import type { Gauge } from "../../src/domain/gauge.js";
 import type { Ease } from "../../src/domain/ease.js";
@@ -84,6 +84,42 @@ describe("renderInstructions", () => {
     );
     expect(text).toContain(
       "Manga derecha (fila de disminución, cada 5 filas, 2 veces, luego cada 6 filas, 18 veces)"
+    );
+  });
+});
+
+describe("renderInstructions with a hem target between the waist-taper and axila-join baselines", () => {
+  // hipCm = 90 => hipTargetStitches = round((90 + 8) * 2) = 196, which sits
+  // strictly between bodyWaistTaper.finalStitches (176) and
+  // axilaJoin.bodyStartStitches (208). If the hem stage's renderer used the
+  // wrong (unchained) baseline of 208 instead of chaining from 176, "increase"
+  // and "decrease" would disagree in sign and this test would catch it.
+  const hipMeasurements: GarmentMeasurements = { ...measurements, hipCm: 90 };
+  const plan = computeGarmentPlan(gauge, ease, hipMeasurements, necklineParams, construction);
+  const text = renderInstructions(plan);
+
+  it("reports the hem stage as an increase, not a decrease", () => {
+    expect(text).toContain("Cadera / ruedo (fila de aumento");
+    const hemLine = text.split("\n\n").find((section) => section.startsWith("Cadera / ruedo"));
+    expect(hemLine).toBeDefined();
+    expect(hemLine).not.toContain("disminución");
+  });
+
+  it("reports the correct final hem stitch count", () => {
+    expect(text).toContain("Resultado: 196 puntos.");
+  });
+});
+
+describe("renderInstructions with a waist target equal to the axila-join baseline (no-op taper)", () => {
+  // waistCm = 96 => waistTargetStitches = round((96 + 8) * 2) = 208, exactly
+  // equal to axilaJoin.bodyStartStitches, so the waist taper has 0 events.
+  const waistMeasurements: GarmentMeasurements = { ...measurements, waistCm: 96 };
+  const plan = computeGarmentPlan(gauge, ease, waistMeasurements, necklineParams, construction);
+  const text = renderInstructions(plan);
+
+  it("describes the waist stage as unchanged, with correct singular/plural wording", () => {
+    expect(text).toContain(
+      "Cintura: sin cambios, se sigue tejiendo derecho durante 42 filas. Resultado: 208 puntos."
     );
   });
 });
