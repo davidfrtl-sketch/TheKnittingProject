@@ -7,6 +7,10 @@ import type { Ease } from "../../src/domain/ease.js";
 import type { GarmentMeasurements } from "../../src/domain/measurements.js";
 import type { NecklineParams } from "../../src/domain/neckline.js";
 import type { YokeConstructionParams } from "../../src/domain/construction.js";
+import { renderMotifTile } from "../../src/render/motifTile.js";
+import type { MotifSource } from "../../src/engine/motifPlacement.js";
+import type { SchematicGeometry } from "../../src/render/schematicGeometry.js";
+import type { StitchChart } from "../../src/render/stitchChart.js";
 
 const gauge: Gauge = { stitchesPer10cm: 20, rowsPer10cm: 28 };
 const ease: Ease = { bodyEaseCm: 8, sleeveEaseCm: 6 };
@@ -82,5 +86,86 @@ describe("renderSchematicSvg", () => {
     expect(svg.match(/class="measure-label back"/g)).toHaveLength(4);
     expect(svg.match(/class="measure-label front"/g)).toHaveLength(4);
     expect(svg.match(/class="measure-label sleeve"/g)).toHaveLength(2);
+  });
+});
+
+describe("renderSchematicSvg — motif overlay", () => {
+  // Hand-built geometry with round numbers (independent of computeSchematicGeometry)
+  // so the expected pixel positions below can be verified by arithmetic, not by
+  // re-deriving a real taper cascade.
+  const geometry: SchematicGeometry = {
+    back: {
+      topWidthCm: 10,
+      underarmWidthCm: 20,
+      waistWidthCm: 16,
+      hemWidthCm: 22,
+      yokeHeightCm: 10,
+      waistLengthCm: 8,
+      hemLengthCm: 6,
+    },
+    front: {
+      topWidthCm: 6,
+      underarmWidthCm: 20,
+      waistWidthCm: 16,
+      hemWidthCm: 22,
+      yokeHeightCm: 10,
+      waistLengthCm: 8,
+      hemLengthCm: 6,
+      joinHeightCm: 4,
+      joinWidthCm: 6,
+      joinBoundOnStitches: 2,
+    },
+    sleeveLeft: {
+      topWidthCm: 6,
+      yokeEndWidthCm: 8,
+      bicepWidthCm: 8,
+      wristWidthCm: 4,
+      yokeHeightCm: 10,
+      taperLengthCm: 6,
+      axilaAdditionStitches: 0,
+      axilaAdditionCircumferenceCm: 0,
+    },
+    sleeveRight: {
+      topWidthCm: 6,
+      yokeEndWidthCm: 8,
+      bicepWidthCm: 8,
+      wristWidthCm: 4,
+      yokeHeightCm: 10,
+      taperLengthCm: 6,
+      axilaAdditionStitches: 0,
+      axilaAdditionCircumferenceCm: 0,
+    },
+  };
+  // With these numbers the layout works out to: centerBack=15, centerFront=43,
+  // centerSleeve=64, yUnderarm=18, yWaist=26, yYokeEnd=18 (verified by hand
+  // against the exact formulas in renderSchematicSvg).
+  const gauge = { stitchesPer10cm: 10, rowsPer10cm: 10 };
+  const chart: StitchChart = { rows: 1, cols: 1, cells: [["k"]] };
+
+  it("embeds no motif group when the motif arguments are omitted (no regression)", () => {
+    const svg = renderSchematicSvg(geometry);
+    expect(svg).not.toContain("motif-tile");
+  });
+
+  it("embeds the motif in both back and front when the source is a body segment", () => {
+    const motifSource: MotifSource = { segment: "bodyWaist", startRow: 3, rowCount: 4, stitches: 20 };
+    const svg = renderSchematicSvg(geometry, chart, gauge, motifSource);
+
+    expect(svg.match(/<g class="motif-tile"/g)).toHaveLength(2);
+    expect(svg).toContain('<g class="motif-tile" transform="translate(10,20)">');
+    expect(svg).toContain('<g class="motif-tile" transform="translate(38,20)">');
+  });
+
+  it("embeds the motif only once when the source is the sleeve segment", () => {
+    const motifSource: MotifSource = { segment: "sleeve", startRow: 2, rowCount: 3, stitches: 8 };
+    const svg = renderSchematicSvg(geometry, chart, gauge, motifSource);
+
+    expect(svg.match(/<g class="motif-tile"/g)).toHaveLength(1);
+    expect(svg).toContain('<g class="motif-tile" transform="translate(62,19)">');
+  });
+
+  it("embeds nothing when findMotifSource-style null is passed explicitly", () => {
+    const svg = renderSchematicSvg(geometry, chart, gauge, null);
+    expect(svg).not.toContain("motif-tile");
   });
 });

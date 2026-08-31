@@ -1,4 +1,9 @@
 import type { PanelGeometry, FrontGeometry, SleeveGeometry, SchematicGeometry } from "./schematicGeometry.js";
+import { cmForRows, cmForStitches } from "../domain/gauge.js";
+import type { Gauge } from "../domain/gauge.js";
+import type { StitchChart } from "./stitchChart.js";
+import type { MotifSource } from "../engine/motifPlacement.js";
+import { renderMotifTile } from "./motifTile.js";
 
 const TOP_MARGIN = 8;
 const SIDE_MARGIN = 4;
@@ -74,7 +79,12 @@ function sleevePolygonPoints(
   return points.map(([x, y]) => `${x},${y}`).join(" ");
 }
 
-export function renderSchematicSvg(geometry: SchematicGeometry): string {
+export function renderSchematicSvg(
+  geometry: SchematicGeometry,
+  motifChart?: StitchChart,
+  gauge?: Gauge,
+  motifSource?: MotifSource | null
+): string {
   const { back, front, sleeveLeft } = geometry;
 
   const maxHalfBack =
@@ -123,6 +133,47 @@ export function renderSchematicSvg(geometry: SchematicGeometry): string {
   const frontPoints = frontPolygonPoints(centerFront, front, y0, yJoin, yUnderarm, yWaist, yHem);
   const sleevePoints = sleevePolygonPoints(centerSleeve, sleeveLeft, y0, yYokeEnd, yWrist);
 
+  const motifParts: string[] = [];
+  if (motifChart && gauge && motifSource) {
+    const rowOffsetCm = cmForRows(gauge, motifSource.startRow - 1);
+    const widthCm = cmForStitches(gauge, motifSource.stitches) / 2;
+
+    if (motifSource.segment === "sleeve") {
+      const yTop = yYokeEnd + rowOffsetCm;
+      motifParts.push(
+        renderMotifTile(
+          motifChart,
+          gauge,
+          centerSleeve - widthCm / 2,
+          yTop,
+          motifSource.stitches,
+          motifSource.rowCount
+        )
+      );
+    } else {
+      const phaseStartY = motifSource.segment === "bodyWaist" ? yUnderarm : yWaist;
+      const yTop = phaseStartY + rowOffsetCm;
+      motifParts.push(
+        renderMotifTile(
+          motifChart,
+          gauge,
+          centerBack - widthCm / 2,
+          yTop,
+          motifSource.stitches,
+          motifSource.rowCount
+        ),
+        renderMotifTile(
+          motifChart,
+          gauge,
+          centerFront - widthCm / 2,
+          yTop,
+          motifSource.stitches,
+          motifSource.rowCount
+        )
+      );
+    }
+  }
+
   return [
     `<svg class="schematic" viewBox="0 0 ${formatCm(totalWidth)} ${formatCm(totalHeight)}" role="img" aria-label="Esquema simplificado de espalda, delantero y manga">`,
     `<text class="panel-title back" x="${formatCm(centerBack)}" y="${formatCm(y0 - 3)}">Espalda</text>`,
@@ -142,6 +193,7 @@ export function renderSchematicSvg(geometry: SchematicGeometry): string {
     `<text class="measure-label sleeve" x="${formatCm(centerSleeve)}" y="${formatCm(yYokeEnd - 1)}">${formatCm(sleeveLeft.bicepWidthCm)}cm</text>`,
     `<text class="measure-label sleeve" x="${formatCm(centerSleeve)}" y="${formatCm(yWrist - 1)}">${formatCm(sleeveLeft.wristWidthCm)}cm</text>`,
     `<line class="axila-line" x1="${formatCm(SIDE_MARGIN)}" y1="${formatCm(yUnderarm)}" x2="${formatCm(totalWidth - SIDE_MARGIN)}" y2="${formatCm(yUnderarm)}"></line>`,
+    ...motifParts,
     `</svg>`,
   ].join("\n");
 }
