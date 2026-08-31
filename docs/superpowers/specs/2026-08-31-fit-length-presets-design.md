@@ -54,7 +54,7 @@ formulario — no cambia nada para quien no toca el selector.)
 
 | Preset | `hemLengthCm` |
 |---|---|
-| Cropped | 8 |
+| Cropped | 10 |
 | Regular | 12.14 |
 | Long | 30 |
 
@@ -118,14 +118,28 @@ the literal union) — every preset is an explicit named constant, and every
 match is an explicit `if`/`else if` chain, so nothing anywhere needs `as`
 or `!`:
 
+Nota (actualizado en una rama posterior): estas constantes ya no viven
+directamente en `app.ts` — se movieron a `src/domain/presets.ts` (un
+módulo puro, sin código de DOM) precisamente para que fueran importables
+desde un test de Vitest sin necesidad de un DOM. `app.ts` las importa
+desde ahí. `LENGTH_CROPPED.hemLengthCm` también se corrigió de `8` a `10`:
+con `8` (~22 filas), el entallado de cadera de las tallas CYC más grandes
+podía necesitar hasta 26 eventos de cambio y la combinación fallaba; `10`
+(~28 filas) alcanza en las 8 combinaciones antes rotas (4 tallas × Cropped
+× 2 opciones de Fit).
+
 ```ts
-const FIT_REGULAR = { bodyEaseCm: 8, sleeveEaseCm: 6 };
-const FIT_OVERSIZED = { bodyEaseCm: 20, sleeveEaseCm: 14 };
+// src/domain/presets.ts
+export const FIT_REGULAR = { bodyEaseCm: 8, sleeveEaseCm: 6 };
+export const FIT_OVERSIZED = { bodyEaseCm: 20, sleeveEaseCm: 14 };
 
-const LENGTH_CROPPED = { hemLengthCm: 8 };
-const LENGTH_REGULAR = { hemLengthCm: 12.14 };
-const LENGTH_LONG = { hemLengthCm: 30 };
+export const LENGTH_CROPPED = { hemLengthCm: 10 };
+export const LENGTH_REGULAR = { hemLengthCm: 12.14 };
+export const LENGTH_LONG = { hemLengthCm: 30 };
+```
 
+```ts
+// src/web/app.ts
 function setNumberInputValue(id: string, value: number): void {
   const el = document.getElementById(id);
   if (el instanceof HTMLInputElement) {

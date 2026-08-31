@@ -106,28 +106,44 @@ Sin CSS nueva — reutiliza `.preset-select`, ya mergeado.
 ## Cambios en `app.ts`
 
 Mismo patrón que `FIT_REGULAR`/`FIT_OVERSIZED`: constantes nombradas, sin
-`Record` genérico ni `as`. Cada talla es un objeto con los 9 campos:
+`Record` genérico ni `as`. Cada talla es un objeto con los 9 campos.
+
+Nota (actualizado en una rama posterior): estas constantes, junto con las
+de Fit y Largo, se movieron a `src/domain/presets.ts` — un módulo puro sin
+código de DOM — para que un test de Vitest pudiera importarlas sin
+necesitar un DOM. `app.ts` las importa desde ahí; el resto del código que
+las usa (`applySizePreset`, `matchesSizePreset`, los handlers) no cambió.
+Esto también habilitó `tests/engine/presetCombinations.test.ts`, un test
+combinatorio que corre `computeGarmentPlan` para las 4 tallas × 2 Fit × 3
+Largo (24 casos) más los defaults crudos del formulario (25 en total), al
+gauge por defecto de la herramienta — el gate automático que faltaba y que
+hubiera detectado el bug de "Cropped + talla grande" sin depender de
+pruebas manuales en el navegador.
 
 ```ts
-const SIZE_S = {
+// src/domain/presets.ts
+export const SIZE_S = {
   chestCm: 84, neckWidthBackCm: 15, bicepCm: 26, armholeDepthCm: 17,
   waistCm: 66, hipCm: 90, wristCm: 11, waistLengthCm: 14, sleeveLengthCm: 43,
 };
-const SIZE_M = {
+export const SIZE_M = {
   chestCm: 94, neckWidthBackCm: 16, bicepCm: 28, armholeDepthCm: 18,
   waistCm: 74, hipCm: 100, wristCm: 12, waistLengthCm: 15, sleeveLengthCm: 43,
 };
-const SIZE_L = {
+export const SIZE_L = {
   chestCm: 104, neckWidthBackCm: 17, bicepCm: 30, armholeDepthCm: 20,
   waistCm: 84, hipCm: 110, wristCm: 13, waistLengthCm: 16, sleeveLengthCm: 44,
 };
-const SIZE_XL = {
+export const SIZE_XL = {
   chestCm: 114, neckWidthBackCm: 18, bicepCm: 34, armholeDepthCm: 21,
   waistCm: 94, hipCm: 118, wristCm: 15, waistLengthCm: 17, sleeveLengthCm: 44,
 };
 
-type SizePreset = typeof SIZE_S;
+export type SizePreset = typeof SIZE_S;
+```
 
+```ts
+// src/web/app.ts
 function applySizePreset(size: SizePreset): void {
   setNumberInputValue("chestCm", size.chestCm);
   setNumberInputValue("neckWidthBackCm", size.neckWidthBackCm);

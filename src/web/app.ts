@@ -11,32 +11,18 @@ import type { NecklineParams } from "../domain/neckline.js";
 import type { YokeConstructionParams } from "../domain/construction.js";
 import { renderStitchChart } from "../render/stitchChart.js";
 import type { StitchChart, StitchSymbol } from "../render/stitchChart.js";
-
-const FIT_REGULAR = { bodyEaseCm: 8, sleeveEaseCm: 6 };
-const FIT_OVERSIZED = { bodyEaseCm: 20, sleeveEaseCm: 14 };
-
-const LENGTH_CROPPED = { hemLengthCm: 8 };
-const LENGTH_REGULAR = { hemLengthCm: 12.14 };
-const LENGTH_LONG = { hemLengthCm: 30 };
-
-const SIZE_S = {
-  chestCm: 84, neckWidthBackCm: 15, bicepCm: 26, armholeDepthCm: 17,
-  waistCm: 66, hipCm: 90, wristCm: 11, waistLengthCm: 14, sleeveLengthCm: 43,
-};
-const SIZE_M = {
-  chestCm: 94, neckWidthBackCm: 16, bicepCm: 28, armholeDepthCm: 18,
-  waistCm: 74, hipCm: 100, wristCm: 12, waistLengthCm: 15, sleeveLengthCm: 43,
-};
-const SIZE_L = {
-  chestCm: 104, neckWidthBackCm: 17, bicepCm: 30, armholeDepthCm: 20,
-  waistCm: 84, hipCm: 110, wristCm: 13, waistLengthCm: 16, sleeveLengthCm: 44,
-};
-const SIZE_XL = {
-  chestCm: 114, neckWidthBackCm: 18, bicepCm: 34, armholeDepthCm: 21,
-  waistCm: 94, hipCm: 118, wristCm: 15, waistLengthCm: 17, sleeveLengthCm: 44,
-};
-
-type SizePreset = typeof SIZE_S;
+import {
+  FIT_REGULAR,
+  FIT_OVERSIZED,
+  LENGTH_CROPPED,
+  LENGTH_REGULAR,
+  LENGTH_LONG,
+  SIZE_S,
+  SIZE_M,
+  SIZE_L,
+  SIZE_XL,
+} from "../domain/presets.js";
+import type { SizePreset } from "../domain/presets.js";
 
 function getNumberInput(id: string): number {
   const el = document.getElementById(id);
