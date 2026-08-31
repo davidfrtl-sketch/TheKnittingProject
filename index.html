@@ -187,6 +187,16 @@
   }
 
   [hidden] { display: none !important; }
+
+  #chart-container { overflow-x: auto; margin-top: 12px; }
+  #chart-container svg { min-width: 400px; }
+  .chart-cell { fill: var(--surface); stroke: var(--ink); stroke-width: 0.5; cursor: pointer; }
+  .chart-cell.p { fill: var(--paper); }
+  .chart-cell.cable-left, .chart-cell.cable-right { fill: var(--electric); }
+  .purl-mark { stroke: var(--ink); stroke-width: 0.6; }
+  .cable-cross { stroke: #ffffff; stroke-width: 0.6; }
+  .chart-legend-label { font-family: var(--font-body); font-size: 4px; fill: var(--ink); }
+  .chart-controls { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -259,6 +269,20 @@
       <h2>Instrucciones</h2>
       <pre id="instructions-container"></pre>
     </div>
+  </div>
+
+  <div class="result-card">
+    <h2>Gráfico de punto</h2>
+    <p class="lede">Diseñá un motivo con derecho, revés y cruces de trenza 2/2. Hacé clic en una celda para rotar su símbolo.</p>
+    <div class="field-grid">
+      <label>Filas <input type="number" id="chart-rows" value="7" step="1"></label>
+      <label>Columnas <input type="number" id="chart-cols" value="13" step="1"></label>
+    </div>
+    <div class="chart-controls">
+      <button type="button" id="chart-resize-button">Redimensionar</button>
+      <button type="button" id="chart-preset-button">Cargar cruz de ejemplo</button>
+    </div>
+    <div id="chart-container"></div>
   </div>
 </div>
 <script type="module" src="./dist/web/app.js"></script>

@@ -7,6 +7,8 @@ import type { Ease } from "../domain/ease.js";
 import type { GarmentMeasurements } from "../domain/measurements.js";
 import type { NecklineParams } from "../domain/neckline.js";
 import type { YokeConstructionParams } from "../domain/construction.js";
+import { renderStitchChart } from "../render/stitchChart.js";
+import type { StitchChart, StitchSymbol } from "../render/stitchChart.js";
 
 function getNumberInput(id: string): number {
   const el = document.getElementById(id);
@@ -86,3 +88,116 @@ const button = document.getElementById("calculate-button");
 if (button) {
   button.addEventListener("click", calculate);
 }
+
+const SYMBOL_CYCLE: StitchSymbol[] = ["k", "p", "cl", "cr"];
+
+function nextSymbol(symbol: StitchSymbol): StitchSymbol {
+  const index = SYMBOL_CYCLE.indexOf(symbol);
+  const next = SYMBOL_CYCLE[(index + 1) % SYMBOL_CYCLE.length];
+  return next ?? "k";
+}
+
+function createBlankChart(rows: number, cols: number): StitchChart {
+  const cells: StitchSymbol[][] = [];
+  for (let row = 0; row < rows; row++) {
+    cells.push(Array.from({ length: cols }, (): StitchSymbol => "k"));
+  }
+  return { rows, cols, cells };
+}
+
+function createCrossPreset(): StitchChart {
+  const size = 13;
+  const chart = createBlankChart(size, size);
+  const mid = Math.floor(size / 2);
+  for (let row = 0; row < size; row++) {
+    const rowCells = chart.cells[row];
+    if (!rowCells) {
+      continue;
+    }
+    for (let col = 0; col < size; col++) {
+      if (row === mid || col === mid) {
+        rowCells[col] = "p";
+      }
+    }
+    if (row % 4 === 0) {
+      rowCells[0] = "cl";
+      rowCells[size - 4] = "cr";
+    }
+  }
+  return chart;
+}
+
+let currentChart: StitchChart = createBlankChart(7, 13);
+
+function renderChart(): void {
+  const container = document.getElementById("chart-container");
+  if (container) {
+    container.innerHTML = renderStitchChart(currentChart);
+  }
+}
+
+function showChartError(error: unknown): void {
+  const errorBox = document.getElementById("error-box");
+  if (errorBox) {
+    errorBox.hidden = false;
+    errorBox.textContent = error instanceof Error ? error.message : String(error);
+  }
+}
+
+function setupChartEditor(): void {
+  const container = document.getElementById("chart-container");
+  const resizeButton = document.getElementById("chart-resize-button");
+  const presetButton = document.getElementById("chart-preset-button");
+
+  if (container) {
+    container.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      const cell = target.closest("[data-row][data-col]");
+      if (!(cell instanceof Element)) {
+        return;
+      }
+      const row = Number(cell.getAttribute("data-row"));
+      const col = Number(cell.getAttribute("data-col"));
+      const rowCells = currentChart.cells[row];
+      if (!rowCells) {
+        return;
+      }
+      const symbol = rowCells[col];
+      if (symbol === undefined) {
+        return;
+      }
+      rowCells[col] = nextSymbol(symbol);
+      renderChart();
+    });
+  }
+
+  if (resizeButton) {
+    resizeButton.addEventListener("click", () => {
+      try {
+        const rows = getNumberInput("chart-rows");
+        const cols = getNumberInput("chart-cols");
+        if (!Number.isInteger(rows) || rows < 1 || !Number.isInteger(cols) || cols < 1) {
+          throw new Error("Filas y columnas deben ser números enteros positivos.");
+        }
+        currentChart = createBlankChart(rows, cols);
+        renderChart();
+      } catch (error) {
+        showChartError(error);
+      }
+    });
+  }
+
+  if (presetButton) {
+    presetButton.addEventListener("click", () => {
+      currentChart = createCrossPreset();
+      renderChart();
+    });
+  }
+
+  renderChart();
+}
+
+setupChartEditor();
