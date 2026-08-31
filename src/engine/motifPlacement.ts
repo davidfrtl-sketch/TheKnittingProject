@@ -41,32 +41,27 @@ function longestRun(schedule: TaperRow[]): Run | null {
 
 const SEGMENT_ORDER: MotifSegment[] = ["bodyWaist", "bodyHem", "sleeve"];
 
-export function findMotifSource(plan: MotifPlacementInput): MotifSource | null {
-  const runsBySegment: Record<MotifSegment, Run | null> = {
-    bodyWaist: longestRun(plan.bodyWaistTaper.schedule),
-    bodyHem: longestRun(plan.bodyHemTaper.schedule),
-    sleeve: longestRun(plan.sleeveLeftTaper.schedule),
+export function findMotifCandidates(plan: MotifPlacementInput): MotifSource[] {
+  const scheduleBySegment: Record<MotifSegment, TaperRow[]> = {
+    bodyWaist: plan.bodyWaistTaper.schedule,
+    bodyHem: plan.bodyHemTaper.schedule,
+    sleeve: plan.sleeveLeftTaper.schedule,
   };
 
-  let winner: { segment: MotifSegment; run: Run } | null = null;
+  const candidates: Array<{ segment: MotifSegment; run: Run }> = [];
   for (const segment of SEGMENT_ORDER) {
-    const run = runsBySegment[segment];
-    if (!run) {
-      continue;
-    }
-    if (!winner || run.rowCount > winner.run.rowCount) {
-      winner = { segment, run };
+    const run = longestRun(scheduleBySegment[segment]);
+    if (run && run.rowCount > 1) {
+      candidates.push({ segment, run });
     }
   }
 
-  if (!winner || winner.run.rowCount <= 1) {
-    return null;
-  }
+  candidates.sort((a, b) => b.run.rowCount - a.run.rowCount);
 
-  return {
-    segment: winner.segment,
-    startRow: winner.run.startRow,
-    rowCount: winner.run.rowCount,
-    stitches: winner.run.stitches,
-  };
+  return candidates.map(({ segment, run }) => ({
+    segment,
+    startRow: run.startRow,
+    rowCount: run.rowCount,
+    stitches: run.stitches,
+  }));
 }

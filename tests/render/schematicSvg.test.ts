@@ -8,7 +8,7 @@ import type { GarmentMeasurements } from "../../src/domain/measurements.js";
 import type { NecklineParams } from "../../src/domain/neckline.js";
 import type { YokeConstructionParams } from "../../src/domain/construction.js";
 import type { MotifSource } from "../../src/engine/motifPlacement.js";
-import { findMotifSource } from "../../src/engine/motifPlacement.js";
+import { findMotifCandidates } from "../../src/engine/motifPlacement.js";
 import type { SchematicGeometry } from "../../src/render/schematicGeometry.js";
 import type { StitchChart } from "../../src/render/stitchChart.js";
 
@@ -175,9 +175,9 @@ describe("renderSchematicSvg — motif overlay", () => {
   it("keeps the motif tile within the sleeve panel's real edges (end-to-end with a real GarmentPlan)", () => {
     const realPlan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction);
     const realGeometry = computeSchematicGeometry(realPlan, gauge);
-    const realMotifSource = findMotifSource(realPlan);
+    const realMotifSource = findMotifCandidates(realPlan)[0];
     if (!realMotifSource) {
-      throw new Error("Expected findMotifSource to return a result for this fixture's real plan.");
+      throw new Error("Expected findMotifCandidates to return at least one candidate for this fixture's real plan.");
     }
     expect(realMotifSource).toEqual({ segment: "sleeve", startRow: 10, rowCount: 6, stitches: 72 });
 
