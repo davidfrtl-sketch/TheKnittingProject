@@ -136,7 +136,8 @@ export function renderSchematicSvg(
   const motifParts: string[] = [];
   if (motifChart && gauge && motifSource) {
     const rowOffsetCm = cmForRows(gauge, motifSource.startRow - 1);
-    const widthCm = cmForStitches(gauge, motifSource.stitches) / 2;
+    const panelStitches = motifSource.stitches / 2;
+    const widthCm = cmForStitches(gauge, panelStitches);
 
     if (motifSource.segment === "sleeve") {
       const yTop = yYokeEnd + rowOffsetCm;
@@ -146,7 +147,7 @@ export function renderSchematicSvg(
           gauge,
           centerSleeve - widthCm / 2,
           yTop,
-          motifSource.stitches,
+          panelStitches,
           motifSource.rowCount
         )
       );
@@ -159,7 +160,7 @@ export function renderSchematicSvg(
           gauge,
           centerBack - widthCm / 2,
           yTop,
-          motifSource.stitches,
+          panelStitches,
           motifSource.rowCount
         ),
         renderMotifTile(
@@ -167,7 +168,7 @@ export function renderSchematicSvg(
           gauge,
           centerFront - widthCm / 2,
           yTop,
-          motifSource.stitches,
+          panelStitches,
           motifSource.rowCount
         )
       );

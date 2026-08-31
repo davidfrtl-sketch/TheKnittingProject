@@ -44,8 +44,11 @@ npm run typecheck
 `index.html` es la herramienta interactiva del navegador (formulario de
 medidas/gauge/ease que llama al motor y renderiza el esquema SVG y las
 instrucciones), y además incluye un editor de gráfico de puntos (stitch
-chart) para armar y previsualizar motivos de punto celda por celda. Antes
-de abrirla hay que compilar `src/` a `dist/`:
+chart) para armar y previsualizar motivos de punto celda por celda. El
+motivo diseñado ahí también se superpone en la vista previa del esquema,
+en su posición real calculada automáticamente (la corrida más larga de
+filas con el mismo número de puntos), sin que el usuario pueda elegirla.
+Antes de abrirla hay que compilar `src/` a `dist/`:
 
 ```bash
 npm run build

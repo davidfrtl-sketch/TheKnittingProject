@@ -2,7 +2,7 @@ import type { StitchChart, StitchSymbol } from "./stitchChart.js";
 import type { Gauge } from "../domain/gauge.js";
 
 function formatCm(value: number): string {
-  return String(Number(value.toFixed(1)));
+  return String(Number(value.toFixed(3)));
 }
 
 function renderKnitCell(x: number, y: number, width: number, height: number): string {
@@ -54,6 +54,9 @@ export function renderMotifTile(
     if (!sourceRow) {
       continue;
     }
+    // Row 0 of the source chart renders at the bottom of the tile (CYC bottom-to-top convention),
+    // which is the opposite of "row 0 = first knitted row = top of a top-down construction" —
+    // this is spec-mandated, not a bug.
     const y = (heightRows - 1 - row) * cellHeightCm;
     let col = 0;
     while (col < widthStitches) {
