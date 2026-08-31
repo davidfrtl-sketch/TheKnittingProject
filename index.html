@@ -6,129 +6,186 @@
 <title>Chaleco Raglan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jacquarda+Bastarda+9&family=Geist+Pixel&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #eceee7;
-    --surface: #f8f9f4;
-    --surface-raised: #ffffff;
-    --text: #1c1f1a;
-    --text-muted: #5c6156;
-    --line: #d7d9cf;
-    --line-strong: #b9bcae;
-    --accent: #1f5c57;
-    --accent-strong: #12403c;
-    --accent-soft: #d9ece9;
-    --accent-ink: #0f3733;
-    --copper: #a1572e;
-    --copper-soft: #f2e2d4;
-    --plum: #6b3b58;
-    --plum-soft: #ecdfe6;
-    --error-bg: #f7dede;
-    --error-text: #7a1f1f;
-    --shadow: 0 1px 2px rgba(20, 24, 18, 0.06), 0 6px 20px -8px rgba(20, 24, 18, 0.18);
-    --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
-    --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --ink: #0a0a0e;
+    --paper: #eef0f7;
+    --surface: #ffffff;
+    --electric: #2440ff;
+    --electric-deep: #12237a;
+    --dot: #c7cbda;
+    --error-text: #c40000;
+    --font-display: "Jacquarda Bastarda 9", "Cambria", "Georgia", serif;
+    --font-body: "Geist Pixel", "Courier New", monospace;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #141815;
-      --surface: #1b201c;
-      --surface-raised: #212722;
-      --text: #e7e9e1;
-      --text-muted: #9aa093;
-      --line: #2d332c;
-      --line-strong: #3c4339;
-      --accent: #6fcfc2;
-      --accent-strong: #8fe0d4;
-      --accent-soft: #1d3733;
-      --accent-ink: #b7ecdf;
-      --copper: #e0995f;
-      --copper-soft: #3a2a1c;
-      --plum: #cf93b7;
-      --plum-soft: #362530;
-      --error-bg: #3a1e1e;
-      --error-text: #f0b4b4;
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
-    }
-  }
+
   * { box-sizing: border-box; }
+
   body {
     margin: 0;
-    background: var(--bg);
-    color: var(--text);
+    background-color: var(--paper);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 14px 14px;
+    color: var(--ink);
     font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 1.6;
   }
-  .page { max-width: 1000px; margin: 0 auto; padding: 32px 20px 64px; display: flex; flex-direction: column; gap: 28px; }
-  h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); margin: 0; }
-  .lede { color: var(--text-muted); max-width: 68ch; margin: 0; }
+
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  header { display: flex; flex-direction: column; gap: 10px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 7vw, 72px);
+    line-height: 1;
+    margin: 0;
+    color: var(--electric);
+    letter-spacing: 0.01em;
+  }
+
+  .lede {
+    font-family: var(--font-body);
+    color: var(--ink);
+    max-width: 62ch;
+    margin: 0;
+    font-size: 13px;
+  }
+
   fieldset {
-    border: 1px solid var(--line);
-    border-radius: 10px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
     padding: 14px 16px 16px;
     margin: 0;
-    background: var(--surface-raised);
+    background: var(--surface);
   }
-  legend { font-family: var(--font-body); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-muted); padding: 0 6px; }
+
+  legend {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--electric);
+    padding: 0 6px;
+  }
+
   .field-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-  label { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--text-muted); }
+
+  label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--ink); }
+
   input[type="number"] {
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: 14px;
     padding: 6px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--line-strong);
-    background: var(--surface);
-    color: var(--text);
+    border-radius: 0;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
   }
+  input[type="number"]:focus-visible {
+    outline: 2px solid var(--electric);
+    outline-offset: 1px;
+  }
+
   form { display: flex; flex-direction: column; gap: 16px; }
+
   button {
     align-self: flex-start;
     font-family: var(--font-body);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 14px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    background: var(--accent);
-    color: var(--accent-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 10px 22px;
+    border-radius: 0;
+    border: 2px solid var(--ink);
+    background: var(--electric);
+    color: #ffffff;
+    box-shadow: 4px 4px 0 var(--ink);
     cursor: pointer;
   }
-  button:hover { background: var(--accent-strong); }
+  button:hover { background: var(--electric-deep); }
+  button:active { box-shadow: 2px 2px 0 var(--ink); transform: translate(2px, 2px); }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
   #error-box {
-    background: var(--error-bg);
+    background: var(--surface);
     color: var(--error-text);
-    border-radius: 8px;
+    border: 2px solid var(--error-text);
+    border-radius: 0;
     padding: 12px 16px;
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: 13px;
   }
+
   #result-box { display: flex; flex-direction: column; gap: 20px; }
+
   .result-card {
-    background: var(--surface-raised);
-    border: 1px solid var(--line);
-    border-radius: 12px;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: 0;
     padding: 20px;
-    box-shadow: var(--shadow);
   }
-  .result-card h2 { font-family: var(--font-display); font-size: 20px; margin: 0 0 12px; }
-  #svg-container { overflow-x: auto; }
-  #svg-container svg { width: 100%; height: auto; min-width: 500px; color: var(--text); }
-  .panel-fill { fill: var(--surface); stroke: var(--text); stroke-width: 0.4; stroke-linejoin: round; }
-  .panel-fill.front { fill: var(--accent-soft); }
-  .panel-fill.sleeve { fill: var(--copper-soft); }
-  .panel-title { font-family: var(--font-body); font-weight: 600; font-size: 4.5px; text-anchor: middle; fill: var(--text-muted); text-transform: uppercase; }
-  .measure-label { font-family: var(--font-mono); font-size: 3.6px; text-anchor: middle; fill: var(--text); }
-  .axila-line { stroke: var(--plum); stroke-width: 0.3; stroke-dasharray: 1.4 1; }
+  .result-card h2 {
+    font-family: var(--font-body);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 14px;
+    margin: 0 0 14px;
+    color: var(--electric);
+  }
+
+  #svg-container {
+    overflow-x: auto;
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+    background-size: 10px 10px;
+    padding: 12px;
+  }
+  #svg-container svg { width: 100%; height: auto; min-width: 500px; }
+
+  .panel-fill { fill: var(--surface); stroke: var(--ink); stroke-width: 0.5; stroke-linejoin: miter; }
+  .panel-fill.front { fill: var(--electric); }
+  .panel-fill.sleeve { fill: var(--ink); }
+
+  .panel-title {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 4.6px;
+    text-anchor: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    fill: var(--ink);
+  }
+
+  .measure-label { font-family: var(--font-body); font-size: 3.6px; text-anchor: middle; }
+  .measure-label.back { fill: var(--ink); }
+  .measure-label.front { fill: #ffffff; }
+  .measure-label.sleeve { fill: #ffffff; }
+
+  .axila-line { stroke: var(--electric); stroke-width: 0.4; stroke-dasharray: 1.6 1.2; }
+
   #instructions-container {
-    font-family: var(--font-mono);
+    background: var(--ink);
+    color: #ffffff;
+    font-family: var(--font-body);
     font-size: 13px;
     white-space: pre-wrap;
     margin: 0;
+    padding: 16px;
+    border: 2px solid var(--ink);
   }
+
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -136,7 +193,7 @@
 <div class="page">
   <header>
     <h1>Chaleco Raglan</h1>
-    <p class="lede">Ingresá tu gauge y tus medidas para calcular el esquema y las instrucciones de un sweater/chaleco raglan con escote redondo, a tu talla.</p>
+    <p class="lede">Ingresá tu gauge y tus medidas: cada punto es un píxel, y esta herramienta calcula exactamente dónde va cada uno — esquema e instrucciones de un sweater/chaleco raglan con escote redondo, a tu talla.</p>
   </header>
 
   <form id="measurements-form">
