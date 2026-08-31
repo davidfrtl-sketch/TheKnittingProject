@@ -1,8 +1,8 @@
 import type { PanelGeometry, FrontGeometry, SleeveGeometry, SchematicGeometry } from "./schematicGeometry.js";
-import { cmForRows, cmForStitches } from "../domain/gauge.js";
+import { cmForStitches } from "../domain/gauge.js";
 import type { Gauge } from "../domain/gauge.js";
 import type { StitchChart } from "./stitchChart.js";
-import type { MotifSource } from "../engine/motifPlacement.js";
+import type { BackMotifColumn } from "../engine/motifPlacement.js";
 import { renderMotifTile } from "./motifTile.js";
 
 const TOP_MARGIN = 8;
@@ -83,7 +83,7 @@ export function renderSchematicSvg(
   geometry: SchematicGeometry,
   motifChart?: StitchChart,
   gauge?: Gauge,
-  motifSource?: MotifSource | null
+  motifColumn?: BackMotifColumn | null
 ): string {
   const { back, front, sleeveLeft } = geometry;
 
@@ -134,45 +134,18 @@ export function renderSchematicSvg(
   const sleevePoints = sleevePolygonPoints(centerSleeve, sleeveLeft, y0, yYokeEnd, yWrist);
 
   const motifParts: string[] = [];
-  if (motifChart && gauge && motifSource) {
-    const rowOffsetCm = cmForRows(gauge, motifSource.startRow - 1);
-    const panelStitches = motifSource.stitches / 2;
-    const widthCm = cmForStitches(gauge, panelStitches);
-
-    if (motifSource.segment === "sleeve") {
-      const yTop = yYokeEnd + rowOffsetCm;
-      motifParts.push(
-        renderMotifTile(
-          motifChart,
-          gauge,
-          centerSleeve - widthCm / 2,
-          yTop,
-          panelStitches,
-          motifSource.rowCount
-        )
-      );
-    } else {
-      const phaseStartY = motifSource.segment === "bodyWaist" ? yUnderarm : yWaist;
-      const yTop = phaseStartY + rowOffsetCm;
-      motifParts.push(
-        renderMotifTile(
-          motifChart,
-          gauge,
-          centerBack - widthCm / 2,
-          yTop,
-          panelStitches,
-          motifSource.rowCount
-        ),
-        renderMotifTile(
-          motifChart,
-          gauge,
-          centerFront - widthCm / 2,
-          yTop,
-          panelStitches,
-          motifSource.rowCount
-        )
-      );
-    }
+  if (motifChart && gauge && motifColumn) {
+    const widthCm = cmForStitches(gauge, motifColumn.widthStitches);
+    motifParts.push(
+      renderMotifTile(
+        motifChart,
+        gauge,
+        centerBack - widthCm / 2,
+        y0,
+        motifColumn.widthStitches,
+        motifColumn.heightRows
+      )
+    );
   }
 
   return [

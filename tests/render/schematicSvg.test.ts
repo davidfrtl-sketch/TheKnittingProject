@@ -7,8 +7,8 @@ import type { Ease } from "../../src/domain/ease.js";
 import type { GarmentMeasurements } from "../../src/domain/measurements.js";
 import type { NecklineParams } from "../../src/domain/neckline.js";
 import type { YokeConstructionParams } from "../../src/domain/construction.js";
-import type { MotifSource } from "../../src/engine/motifPlacement.js";
-import { findMotifCandidates } from "../../src/engine/motifPlacement.js";
+import { computeBackMotifColumn } from "../../src/engine/motifPlacement.js";
+import type { BackMotifColumn } from "../../src/engine/motifPlacement.js";
 import type { SchematicGeometry } from "../../src/render/schematicGeometry.js";
 import type { StitchChart } from "../../src/render/stitchChart.js";
 
@@ -136,9 +136,8 @@ describe("renderSchematicSvg — motif overlay", () => {
       axilaAdditionCircumferenceCm: 0,
     },
   };
-  // With these numbers the layout works out to: centerBack=15, centerFront=43,
-  // centerSleeve=64, yUnderarm=18, yWaist=26, yYokeEnd=18 (verified by hand
-  // against the exact formulas in renderSchematicSvg).
+  // With these numbers the layout works out to: centerBack=15, y0=8 (TOP_MARGIN)
+  // (verified by hand against the exact formulas in renderSchematicSvg).
   // Named distinctly from the file-scope `gauge` (used below by the real-plan
   // end-to-end test) so that test can reference the real 20/28 gauge without
   // being shadowed by this hand-built fixture's round-number gauge.
@@ -150,54 +149,28 @@ describe("renderSchematicSvg — motif overlay", () => {
     expect(svg).not.toContain("motif-tile");
   });
 
-  it("embeds the motif in both back and front when the source is a body segment", () => {
-    const motifSource: MotifSource = { segment: "bodyWaist", startRow: 3, rowCount: 4, stitches: 20 };
-    const svg = renderSchematicSvg(geometry, chart, fixtureGauge, motifSource);
-
-    expect(svg.match(/<g class="motif-tile"/g)).toHaveLength(2);
-    expect(svg).toContain('<g class="motif-tile" transform="translate(10,20)">');
-    expect(svg).toContain('<g class="motif-tile" transform="translate(38,20)">');
-  });
-
-  it("embeds the motif only once when the source is the sleeve segment", () => {
-    const motifSource: MotifSource = { segment: "sleeve", startRow: 2, rowCount: 3, stitches: 8 };
-    const svg = renderSchematicSvg(geometry, chart, fixtureGauge, motifSource);
+  it("embeds exactly one motif tile in the back panel, spanning the full height from y0", () => {
+    const motifColumn: BackMotifColumn = { widthStitches: 20, heightRows: 4 };
+    const svg = renderSchematicSvg(geometry, chart, fixtureGauge, motifColumn);
 
     expect(svg.match(/<g class="motif-tile"/g)).toHaveLength(1);
-    expect(svg).toContain('<g class="motif-tile" transform="translate(62,19)">');
+    expect(svg).toContain('<g class="motif-tile" transform="translate(5,8)">');
   });
 
-  it("embeds nothing when an explicit null motif source is passed", () => {
+  it("embeds nothing when an explicit null motif column is passed", () => {
     const svg = renderSchematicSvg(geometry, chart, fixtureGauge, null);
     expect(svg).not.toContain("motif-tile");
   });
 
-  it("keeps the motif tile within the sleeve panel's real edges (end-to-end with a real GarmentPlan)", () => {
+  it("keeps the motif tile aligned with the back panel's real cast-on width (end-to-end with a real GarmentPlan)", () => {
     const realPlan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction);
     const realGeometry = computeSchematicGeometry(realPlan, gauge);
-    const realMotifSource = findMotifCandidates(realPlan)[0];
-    if (!realMotifSource) {
-      throw new Error("Expected findMotifCandidates to return at least one candidate for this fixture's real plan.");
-    }
-    expect(realMotifSource).toEqual({ segment: "sleeve", startRow: 10, rowCount: 6, stitches: 72 });
+    const motifColumn = computeBackMotifColumn(realPlan);
+    expect(motifColumn).toEqual({ widthStitches: 32, heightRows: 132 });
 
     const smallChart: StitchChart = { rows: 1, cols: 1, cells: [["k"]] };
-    const svgWithMotif = renderSchematicSvg(realGeometry, smallChart, gauge, realMotifSource);
+    const svgWithMotif = renderSchematicSvg(realGeometry, smallChart, gauge, motifColumn);
 
-    const match = svgWithMotif.match(/<g class="motif-tile" transform="translate\(([\d.]+),([\d.]+)\)">/);
-    if (!match) {
-      throw new Error("Expected a motif-tile group in the rendered SVG.");
-    }
-    const tileX = Number(match[1]);
-    const tileWidthCm = (realMotifSource.stitches / 2 / gauge.stitchesPer10cm) * 10;
-
-    // Sleeve panel real bounds with this fixture's gauge/measurements: centerSleeve = 131.5,
-    // bicepWidthCm = 19 (already asserted by the "labels the sleeve's bicep and wrist widths"
-    // test above in this file) — so the panel spans [122, 141] at this height.
-    const panelLeftEdge = 131.5 - 19 / 2;
-    const panelRightEdge = 131.5 + 19 / 2;
-
-    expect(tileX).toBeGreaterThanOrEqual(panelLeftEdge - 0.01);
-    expect(tileX + tileWidthCm).toBeLessThanOrEqual(panelRightEdge + 0.01);
+    expect(svgWithMotif).toContain('<g class="motif-tile" transform="translate(22.5,8)">');
   });
 });
