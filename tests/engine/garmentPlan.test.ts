@@ -17,6 +17,7 @@ const measurements: GarmentMeasurements = {
   hipCm: 98,
   wristCm: 12,
   waistLengthCm: 15,
+  // Decimals chosen so rowsForCm (2.8 rows/cm) rounds to exactly 34 and 118 rows respectively.
   hemLengthCm: 12.14,
   sleeveLengthCm: 42.14,
 };
