@@ -1,4 +1,6 @@
 import { computeGarmentPlan } from "../engine/garmentPlan.js";
+import type { GarmentPlan } from "../engine/garmentPlan.js";
+import { findMotifSource } from "../engine/motifPlacement.js";
 import { computeSchematicGeometry } from "../render/schematicGeometry.js";
 import { renderSchematicSvg } from "../render/schematicSvg.js";
 import { renderInstructions } from "../render/instructionsRenderer.js";
@@ -64,7 +66,8 @@ function calculate(): void {
 
     const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, constructionParams);
     const geometry = computeSchematicGeometry(plan, gauge);
-    const svg = renderSchematicSvg(geometry);
+    const motifSource = findMotifSource(plan);
+    const svg = renderSchematicSvg(geometry, currentChart, gauge, motifSource);
     const instructions = renderInstructions(plan);
 
     const svgContainer = document.getElementById("svg-container");
@@ -77,8 +80,12 @@ function calculate(): void {
     }
 
     resultBox.hidden = false;
+    lastPlan = plan;
+    lastGauge = gauge;
   } catch (error) {
     resultBox.hidden = true;
+    lastPlan = null;
+    lastGauge = null;
     errorBox.hidden = false;
     errorBox.textContent = error instanceof Error ? error.message : String(error);
   }
@@ -128,12 +135,25 @@ function createCrossPreset(): StitchChart {
 }
 
 let currentChart: StitchChart = createBlankChart(7, 13);
+let lastPlan: GarmentPlan | null = null;
+let lastGauge: Gauge | null = null;
 
 function renderChart(): void {
   const container = document.getElementById("chart-container");
   if (container) {
     container.innerHTML = renderStitchChart(currentChart);
   }
+}
+
+function refreshSchematicIfCalculated(): void {
+  const resultBox = document.getElementById("result-box");
+  const svgContainer = document.getElementById("svg-container");
+  if (!resultBox || resultBox.hidden || !svgContainer || !lastPlan || !lastGauge) {
+    return;
+  }
+  const geometry = computeSchematicGeometry(lastPlan, lastGauge);
+  const motifSource = findMotifSource(lastPlan);
+  svgContainer.innerHTML = renderSchematicSvg(geometry, currentChart, lastGauge, motifSource);
 }
 
 function showChartError(error: unknown): void {
@@ -171,6 +191,7 @@ function setupChartEditor(): void {
       }
       rowCells[col] = nextSymbol(symbol);
       renderChart();
+      refreshSchematicIfCalculated();
     });
   }
 
@@ -189,6 +210,7 @@ function setupChartEditor(): void {
         }
         currentChart = createBlankChart(rows, cols);
         renderChart();
+        refreshSchematicIfCalculated();
       } catch (error) {
         showChartError(error);
       }
@@ -199,6 +221,7 @@ function setupChartEditor(): void {
     presetButton.addEventListener("click", () => {
       currentChart = createCrossPreset();
       renderChart();
+      refreshSchematicIfCalculated();
     });
   }
 
