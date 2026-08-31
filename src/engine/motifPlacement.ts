@@ -19,6 +19,7 @@ export function computeBackMotifColumn(plan: BackMotifColumnInput): BackMotifCol
     ...plan.bodyHemTaper.schedule.map((row) => row.stitches),
   ];
   for (const stitches of bodyValues) {
+    // Tapers describe the combined body tube (back + front joined); one panel's flat width is half.
     const backShare = stitches / 2;
     if (backShare < minBack) {
       minBack = backShare;

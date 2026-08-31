@@ -171,6 +171,60 @@ describe("renderSchematicSvg — motif overlay", () => {
     const smallChart: StitchChart = { rows: 1, cols: 1, cells: [["k"]] };
     const svgWithMotif = renderSchematicSvg(realGeometry, smallChart, gauge, motifColumn);
 
-    expect(svgWithMotif).toContain('<g class="motif-tile" transform="translate(22.5,8)">');
+    const groupMatch = svgWithMotif.match(
+      /<g class="motif-tile" transform="translate\(([\d.]+),([\d.]+)\)">([\s\S]*?)<\/g>/
+    );
+    if (!groupMatch) {
+      throw new Error("Expected a motif-tile group in the rendered SVG.");
+    }
+    const translateXStr = groupMatch[1];
+    const translateYStr = groupMatch[2];
+    const groupContent = groupMatch[3];
+    if (translateXStr === undefined || translateYStr === undefined || groupContent === undefined) {
+      throw new Error("Expected a fully-matched motif-tile group.");
+    }
+    const translateX = Number(translateXStr);
+    const translateY = Number(translateYStr);
+
+    const rectRights: number[] = [];
+    const rectXs: number[] = [];
+    const rectBottoms: number[] = [];
+    const rectRegex = /<rect class="motif-cell[^"]*" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g;
+    let match: RegExpExecArray | null;
+    while ((match = rectRegex.exec(groupContent)) !== null) {
+      const xStr = match[1];
+      const yStr = match[2];
+      const widthStr = match[3];
+      const heightStr = match[4];
+      if (xStr === undefined || yStr === undefined || widthStr === undefined || heightStr === undefined) {
+        continue;
+      }
+      const x = Number(xStr);
+      const y = Number(yStr);
+      const width = Number(widthStr);
+      const height = Number(heightStr);
+      rectXs.push(x);
+      rectRights.push(x + width);
+      rectBottoms.push(y + height);
+    }
+    if (rectXs.length === 0) {
+      throw new Error("Expected at least one motif-cell rect inside the tile.");
+    }
+
+    const tileLeft = translateX + Math.min(...rectXs);
+    const tileRight = translateX + Math.max(...rectRights);
+    const tileBottom = translateY + Math.max(...rectBottoms);
+
+    // centerBack=30.5 is already independently asserted by the
+    // "titles each panel and centers it correctly" test above in this file.
+    const centerBack = 30.5;
+    const expectedHalfWidth = realGeometry.back.topWidthCm / 2;
+    const expectedYHem =
+      8 + realGeometry.back.yokeHeightCm + realGeometry.back.waistLengthCm + realGeometry.back.hemLengthCm;
+
+    expect(tileRight - tileLeft).toBeCloseTo(realGeometry.back.topWidthCm, 1);
+    expect(tileLeft).toBeCloseTo(centerBack - expectedHalfWidth, 1);
+    expect(tileRight).toBeCloseTo(centerBack + expectedHalfWidth, 1);
+    expect(tileBottom).toBeCloseTo(expectedYHem, 1);
   });
 });

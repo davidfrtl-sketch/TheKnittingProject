@@ -46,9 +46,11 @@ medidas/gauge/ease que llama al motor y renderiza el esquema SVG y las
 instrucciones), y además incluye un editor de gráfico de puntos (stitch
 chart) para armar y previsualizar motivos de punto celda por celda. El
 motivo diseñado ahí también se superpone en la vista previa del esquema,
-en su posición real calculada automáticamente según el segmento elegido,
-con la corrida más larga preseleccionada por defecto, pero el usuario puede
-ahora elegir cualquier segmento disponible desde un menú desplegable.
+como una columna de ancho fijo que abarca todo el panel de espalda, desde
+el escote hasta el ruedo, centrada, con su ancho calculado automáticamente
+como el punto más angosto que alcanza la espalda en todo su entallado
+(para que ningún aumento/disminución la toque) — ya no hay segmento para
+elegir, siempre es la espalda completa.
 Antes de abrirla hay que compilar `src/` a `dist/`:
 
 ```bash

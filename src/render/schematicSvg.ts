@@ -152,6 +152,7 @@ export function renderSchematicSvg(
     `<svg class="schematic" viewBox="0 0 ${formatCm(totalWidth)} ${formatCm(totalHeight)}" role="img" aria-label="Esquema simplificado de espalda, delantero y manga">`,
     `<text class="panel-title back" x="${formatCm(centerBack)}" y="${formatCm(y0 - 3)}">Espalda</text>`,
     `<polygon class="panel-fill back" points="${backPoints}"></polygon>`,
+    ...motifParts,
     `<text class="measure-label back" x="${formatCm(centerBack)}" y="${formatCm(y0 + 2)}">${formatCm(back.topWidthCm)}cm</text>`,
     `<text class="measure-label back" x="${formatCm(centerBack)}" y="${formatCm(yUnderarm - 1)}">${formatCm(back.underarmWidthCm)}cm</text>`,
     `<text class="measure-label back" x="${formatCm(centerBack)}" y="${formatCm(yWaist - 1)}">${formatCm(back.waistWidthCm)}cm</text>`,
@@ -167,7 +168,6 @@ export function renderSchematicSvg(
     `<text class="measure-label sleeve" x="${formatCm(centerSleeve)}" y="${formatCm(yYokeEnd - 1)}">${formatCm(sleeveLeft.bicepWidthCm)}cm</text>`,
     `<text class="measure-label sleeve" x="${formatCm(centerSleeve)}" y="${formatCm(yWrist - 1)}">${formatCm(sleeveLeft.wristWidthCm)}cm</text>`,
     `<line class="axila-line" x1="${formatCm(SIDE_MARGIN)}" y1="${formatCm(yUnderarm)}" x2="${formatCm(totalWidth - SIDE_MARGIN)}" y2="${formatCm(yUnderarm)}"></line>`,
-    ...motifParts,
     `</svg>`,
   ].join("\n");
 }
