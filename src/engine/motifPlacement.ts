@@ -1,67 +1,37 @@
-import type { TaperRow } from "./taper.js";
 import type { GarmentPlan } from "./garmentPlan.js";
 
-export type MotifSegment = "bodyWaist" | "bodyHem" | "sleeve";
-
-export type MotifSource = {
-  segment: MotifSegment;
-  startRow: number;
-  rowCount: number;
-  stitches: number;
+export type BackMotifColumn = {
+  widthStitches: number;
+  heightRows: number;
 };
 
-export type MotifPlacementInput = Pick<
-  GarmentPlan,
-  "bodyWaistTaper" | "bodyHemTaper" | "sleeveLeftTaper"
->;
+export type BackMotifColumnInput = Pick<GarmentPlan, "yoke" | "bodyWaistTaper" | "bodyHemTaper">;
 
-type Run = { startRow: number; rowCount: number; stitches: number };
+export function computeBackMotifColumn(plan: BackMotifColumnInput): BackMotifColumn | null {
+  const yokeBackValues = [
+    plan.yoke.castOnBreakdown.back,
+    ...plan.yoke.schedule.map((round) => round.stitchCounts.back),
+  ];
+  let minBack = Math.min(...yokeBackValues);
 
-function longestRun(schedule: TaperRow[]): Run | null {
-  let best: Run | null = null;
-  let current: Run | null = null;
-
-  for (const row of schedule) {
-    if (current && current.stitches === row.stitches) {
-      current = {
-        startRow: current.startRow,
-        rowCount: current.rowCount + 1,
-        stitches: current.stitches,
-      };
-    } else {
-      current = { startRow: row.rowNumber, rowCount: 1, stitches: row.stitches };
-    }
-    if (!best || current.rowCount > best.rowCount) {
-      best = current;
+  const bodyValues = [
+    ...plan.bodyWaistTaper.schedule.map((row) => row.stitches),
+    ...plan.bodyHemTaper.schedule.map((row) => row.stitches),
+  ];
+  for (const stitches of bodyValues) {
+    const backShare = stitches / 2;
+    if (backShare < minBack) {
+      minBack = backShare;
     }
   }
 
-  return best;
-}
-
-const SEGMENT_ORDER: MotifSegment[] = ["bodyWaist", "bodyHem", "sleeve"];
-
-export function findMotifCandidates(plan: MotifPlacementInput): MotifSource[] {
-  const scheduleBySegment: Record<MotifSegment, TaperRow[]> = {
-    bodyWaist: plan.bodyWaistTaper.schedule,
-    bodyHem: plan.bodyHemTaper.schedule,
-    sleeve: plan.sleeveLeftTaper.schedule,
-  };
-
-  const candidates: Array<{ segment: MotifSegment; run: Run }> = [];
-  for (const segment of SEGMENT_ORDER) {
-    const run = longestRun(scheduleBySegment[segment]);
-    if (run && run.rowCount > 1) {
-      candidates.push({ segment, run });
-    }
+  const widthStitches = Math.floor(minBack / 2) * 2;
+  if (widthStitches < 1) {
+    return null;
   }
 
-  candidates.sort((a, b) => b.run.rowCount - a.run.rowCount);
+  const heightRows =
+    plan.yoke.schedule.length + plan.bodyWaistTaper.schedule.length + plan.bodyHemTaper.schedule.length;
 
-  return candidates.map(({ segment, run }) => ({
-    segment,
-    startRow: run.startRow,
-    rowCount: run.rowCount,
-    stitches: run.stitches,
-  }));
+  return { widthStitches, heightRows };
 }
