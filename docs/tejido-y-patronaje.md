@@ -163,7 +163,7 @@ Ejemplo aplicando la tabla de grading (sección 11):
 
 ## 13. Ideas de arquitectura sugeridas por este vocabulario
 
-1. Modelar cada punto como símbolo con reglas de consumo/producción de puntos (alfabeto de gráfico) — para el renderizador de gráfico y para validar múltiplos de patrón.
+1. Modelar cada punto como símbolo con reglas de consumo/producción de puntos (alfabeto de gráfico) — para el renderizador de gráfico y para validar múltiplos de patrón. Ver Stitch Fiddle (fuentes) para una tabla ya organizada símbolo/abreviatura/descripción/consume/produce, útil como referencia de nomenclatura al ampliar el alfabeto más allá de derecho/revés/cruce 2x2 (trenzas de otros anchos, aumentos/disminuciones, calado).
 2. Gauge y ease como parámetros de entrada separados del patrón base, nunca constantes.
 3. Construcción como grafo/secuencia de piezas con puntos de unión (espalda, delantero, mangas, axilas), no una lista lineal única de instrucciones.
 4. Grading como función paramétrica `talla → (gauge, medidas, holgura) → puntos y rondas` — pero con el marco del cuerpo (cuello/hombros) y la circunferencia (pecho/bíceps) tratados con tasas de crecimiento distintas, no un único factor de escala.
@@ -181,6 +181,7 @@ Ejemplo aplicando la tabla de grading (sección 11):
 - [Standard Body Measurements/Sizing — Craft Yarn Council](https://www.craftyarncouncil.com/standards/body-sizing)
 - [Woman Size Chart — Craft Yarn Council](https://www.craftyarncouncil.com/standards/woman-size)
 - [Knit Chart Symbols — Craft Yarn Council](https://www.craftyarncouncil.com/standards/knit-chart-symbols)
+- [Stitches — Stitch Fiddle](https://www.stitchfiddle.com/en/stitches) — biblioteca de símbolos de tejido (básicos, aumentos, disminuciones, trenzas de 2 a 12 puntos, brioche, etc.) con nomenclatura estándar (ej. `2/2 RC`/`2/2 LC` para lo que este proyecto llama `cr`/`cl`) y modelo consume/produce por símbolo — referencia para cuando se amplíe el alfabeto de `StitchSymbol` más allá de derecho/revés/cruce 2x2.
 - [Sweater Construction: The Many Ways to Knit a Sweater — tin can knits](https://blog.tincanknits.com/2021/07/29/sweater-construction-the-many-ways-to-knit-a-sweater/)
 - [How to improvise a top-down sweater — KT's Slow Closet (serie completa)](https://ktslowcloset.com/2013/03/08/how-to-improvise-a-top-down-sweater-part-1-casting-on-and-marking-raglans/)
 - [How to Shape Top-Down Necklines — Sister Mountain](https://www.sistermountain.com/blog/top-down-necklines)
