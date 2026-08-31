@@ -146,17 +146,6 @@
     color: var(--electric);
   }
 
-  #motif-select-wrapper { margin-bottom: 10px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-  #motif-segment-select {
-    font-family: var(--font-body);
-    font-size: 13px;
-    padding: 4px 6px;
-    border: 2px solid var(--ink);
-    border-radius: 0;
-    background: var(--paper);
-    color: var(--ink);
-  }
-
   #svg-container {
     overflow-x: auto;
     background-image: radial-gradient(var(--dot) 1px, transparent 1px);
@@ -286,10 +275,6 @@
   <div id="result-box" hidden>
     <div class="result-card">
       <h2>Esquema</h2>
-      <div id="motif-select-wrapper" hidden>
-        <label for="motif-segment-select">Motivo en:</label>
-        <select id="motif-segment-select"></select>
-      </div>
       <div id="svg-container"></div>
     </div>
     <div class="result-card">
