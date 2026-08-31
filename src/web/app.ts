@@ -15,7 +15,7 @@ import type { StitchChart, StitchSymbol } from "../render/stitchChart.js";
 const FIT_REGULAR = { bodyEaseCm: 8, sleeveEaseCm: 6 };
 const FIT_OVERSIZED = { bodyEaseCm: 20, sleeveEaseCm: 14 };
 
-const LENGTH_CROPPED = { hemLengthCm: 2 };
+const LENGTH_CROPPED = { hemLengthCm: 8 };
 const LENGTH_REGULAR = { hemLengthCm: 12.14 };
 const LENGTH_LONG = { hemLengthCm: 30 };
 

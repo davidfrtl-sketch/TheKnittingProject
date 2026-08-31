@@ -54,7 +54,7 @@ formulario — no cambia nada para quien no toca el selector.)
 
 | Preset | `hemLengthCm` |
 |---|---|
-| Cropped | 2 |
+| Cropped | 8 |
 | Regular | 12.14 |
 | Long | 30 |
 
@@ -93,7 +93,7 @@ aparece seleccionada automáticamente cuando el JS la fuerza; sigue siendo
 una `<option>` real así `select.value = "custom"` funciona.)
 
 CSS nueva — el `<select>` reutiliza el mismo lenguaje visual que ya existe
-para `#motif-segment-select` en una pasada anterior (borde sólido, sin
+para los campos `input[type="number"]` del formulario (borde sólido, sin
 bordes redondeados, tipografía de cuerpo):
 
 ```css
@@ -122,7 +122,7 @@ or `!`:
 const FIT_REGULAR = { bodyEaseCm: 8, sleeveEaseCm: 6 };
 const FIT_OVERSIZED = { bodyEaseCm: 20, sleeveEaseCm: 14 };
 
-const LENGTH_CROPPED = { hemLengthCm: 2 };
+const LENGTH_CROPPED = { hemLengthCm: 8 };
 const LENGTH_REGULAR = { hemLengthCm: 12.14 };
 const LENGTH_LONG = { hemLengthCm: 30 };
 

@@ -83,7 +83,7 @@
 
   label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--ink); }
 
-  .preset-select {
+  input[type="number"], .preset-select {
     font-family: var(--font-body);
     font-size: 14px;
     padding: 6px 8px;
@@ -92,17 +92,7 @@
     background: var(--paper);
     color: var(--ink);
   }
-
-  input[type="number"] {
-    font-family: var(--font-body);
-    font-size: 14px;
-    padding: 6px 8px;
-    border-radius: 0;
-    border: 2px solid var(--ink);
-    background: var(--paper);
-    color: var(--ink);
-  }
-  input[type="number"]:focus-visible {
+  input[type="number"]:focus-visible, .preset-select:focus-visible {
     outline: 2px solid var(--electric);
     outline-offset: 1px;
   }
