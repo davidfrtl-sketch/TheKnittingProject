@@ -43,16 +43,18 @@ craftyarncouncil.com/standards/woman-size — punto medio de cada rango):
 
 | Campo | S | M | L | XL |
 |---|---|---|---|---|
-| `chestCm` | 83.5 | 94 | 104 | 114.5 |
-| `bicepCm` | 26 | 28 | 30.5 | 34.5 |
-| `armholeDepthCm` | 17 | 18.25 | 19.75 | 21 |
-| `waistCm` | 65.5 | 73.5 | 84 | 94 |
-| `hipCm` | 90.25 | 99 | 109 | 119.25 |
-| `sleeveLengthCm` | 43 | 43 | 44.5 | 44.5 |
+| `chestCm` | 84 | 94 | 104 | 114 |
+| `bicepCm` | 26 | 28 | 30 | 34 |
+| `armholeDepthCm` | 17 | 18 | 20 | 21 |
+| `waistCm` | 66 | 74 | 84 | 94 |
+| `hipCm` | 90 | 100 | 110 | 118 |
+| `sleeveLengthCm` | 43 | 43 | 44 | 44 |
 
 (`sleeveLengthCm` viene de la fila CYC "Arm Length to Underarm" — el
 propio valor S=43 casi calca el default actual del formulario, 42.14,
-confirmando que mide lo mismo que nuestro `sleeveLengthCm`: axila→puño.)
+confirmando que mide lo mismo que nuestro `sleeveLengthCm`: axila→puño.
+Los valores de esta tabla se redondearon a centímetros enteros dentro o
+cerca de cada rango CYC original — ver nota debajo.)
 
 **Tabla propia** (crecimiento leve, sin estándar externo — ancladas en M
 para que coincidan exacto con los defaults actuales del formulario):
@@ -60,12 +62,23 @@ para que coincidan exacto con los defaults actuales del formulario):
 | Campo | S | M | L | XL |
 |---|---|---|---|---|
 | `neckWidthBackCm` | 15 | 16 | 17 | 18 |
-| `wristCm` | 11 | 12 | 13.5 | 15 |
+| `wristCm` | 11 | 12 | 13 | 15 |
 | `waistLengthCm` | 14 | 15 | 16 | 17 |
 
 Ninguna talla completa coincide con los valores actuales del formulario
 (a diferencia de "Regular" en Fit/Largo) — el selector arranca en
 "Personalizado" al cargar la página.
+
+**Nota importante**: los valores originales (medias exactas de los
+rangos CYC, con fracciones .5/.25) fallaban al calcular en 3 de las 4
+tallas (S, M, XL) con el gauge por defecto de la herramienta (20
+puntos/10cm) — duplicar un valor con fracción .5 siempre da un número
+impar de puntos, y el raglan exige que todo entallado cambie de a
+pares. Se redondearon pecho/cintura/cadera/bíceps/profundidad de
+sisa/muñeca/largo de manga a centímetros enteros (dentro o cerca del
+rango CYC original) para que las 4 tallas calculen sin error con la
+configuración por defecto — verificado corriendo `computeGarmentPlan`
+directamente contra el motor real, no solo a mano.
 
 ## Cambios en `index.html`
 
@@ -97,20 +110,20 @@ Mismo patrón que `FIT_REGULAR`/`FIT_OVERSIZED`: constantes nombradas, sin
 
 ```ts
 const SIZE_S = {
-  chestCm: 83.5, neckWidthBackCm: 15, bicepCm: 26, armholeDepthCm: 17,
-  waistCm: 65.5, hipCm: 90.25, wristCm: 11, waistLengthCm: 14, sleeveLengthCm: 43,
+  chestCm: 84, neckWidthBackCm: 15, bicepCm: 26, armholeDepthCm: 17,
+  waistCm: 66, hipCm: 90, wristCm: 11, waistLengthCm: 14, sleeveLengthCm: 43,
 };
 const SIZE_M = {
-  chestCm: 94, neckWidthBackCm: 16, bicepCm: 28, armholeDepthCm: 18.25,
-  waistCm: 73.5, hipCm: 99, wristCm: 12, waistLengthCm: 15, sleeveLengthCm: 43,
+  chestCm: 94, neckWidthBackCm: 16, bicepCm: 28, armholeDepthCm: 18,
+  waistCm: 74, hipCm: 100, wristCm: 12, waistLengthCm: 15, sleeveLengthCm: 43,
 };
 const SIZE_L = {
-  chestCm: 104, neckWidthBackCm: 17, bicepCm: 30.5, armholeDepthCm: 19.75,
-  waistCm: 84, hipCm: 109, wristCm: 13.5, waistLengthCm: 16, sleeveLengthCm: 44.5,
+  chestCm: 104, neckWidthBackCm: 17, bicepCm: 30, armholeDepthCm: 20,
+  waistCm: 84, hipCm: 110, wristCm: 13, waistLengthCm: 16, sleeveLengthCm: 44,
 };
 const SIZE_XL = {
-  chestCm: 114.5, neckWidthBackCm: 18, bicepCm: 34.5, armholeDepthCm: 21,
-  waistCm: 94, hipCm: 119.25, wristCm: 15, waistLengthCm: 17, sleeveLengthCm: 44.5,
+  chestCm: 114, neckWidthBackCm: 18, bicepCm: 34, armholeDepthCm: 21,
+  waistCm: 94, hipCm: 118, wristCm: 15, waistLengthCm: 17, sleeveLengthCm: 44,
 };
 
 type SizePreset = typeof SIZE_S;

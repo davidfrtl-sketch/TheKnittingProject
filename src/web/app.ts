@@ -20,20 +20,20 @@ const LENGTH_REGULAR = { hemLengthCm: 12.14 };
 const LENGTH_LONG = { hemLengthCm: 30 };
 
 const SIZE_S = {
-  chestCm: 83.5, neckWidthBackCm: 15, bicepCm: 26, armholeDepthCm: 17,
-  waistCm: 65.5, hipCm: 90.25, wristCm: 11, waistLengthCm: 14, sleeveLengthCm: 43,
+  chestCm: 84, neckWidthBackCm: 15, bicepCm: 26, armholeDepthCm: 17,
+  waistCm: 66, hipCm: 90, wristCm: 11, waistLengthCm: 14, sleeveLengthCm: 43,
 };
 const SIZE_M = {
-  chestCm: 94, neckWidthBackCm: 16, bicepCm: 28, armholeDepthCm: 18.25,
-  waistCm: 73.5, hipCm: 99, wristCm: 12, waistLengthCm: 15, sleeveLengthCm: 43,
+  chestCm: 94, neckWidthBackCm: 16, bicepCm: 28, armholeDepthCm: 18,
+  waistCm: 74, hipCm: 100, wristCm: 12, waistLengthCm: 15, sleeveLengthCm: 43,
 };
 const SIZE_L = {
-  chestCm: 104, neckWidthBackCm: 17, bicepCm: 30.5, armholeDepthCm: 19.75,
-  waistCm: 84, hipCm: 109, wristCm: 13.5, waistLengthCm: 16, sleeveLengthCm: 44.5,
+  chestCm: 104, neckWidthBackCm: 17, bicepCm: 30, armholeDepthCm: 20,
+  waistCm: 84, hipCm: 110, wristCm: 13, waistLengthCm: 16, sleeveLengthCm: 44,
 };
 const SIZE_XL = {
-  chestCm: 114.5, neckWidthBackCm: 18, bicepCm: 34.5, armholeDepthCm: 21,
-  waistCm: 94, hipCm: 119.25, wristCm: 15, waistLengthCm: 17, sleeveLengthCm: 44.5,
+  chestCm: 114, neckWidthBackCm: 18, bicepCm: 34, armholeDepthCm: 21,
+  waistCm: 94, hipCm: 118, wristCm: 15, waistLengthCm: 17, sleeveLengthCm: 44,
 };
 
 type SizePreset = typeof SIZE_S;
