@@ -167,7 +167,7 @@ describe("renderSchematicSvg — motif overlay", () => {
     expect(svg).toContain('<g class="motif-tile" transform="translate(62,19)">');
   });
 
-  it("embeds nothing when findMotifSource-style null is passed explicitly", () => {
+  it("embeds nothing when an explicit null motif source is passed", () => {
     const svg = renderSchematicSvg(geometry, chart, fixtureGauge, null);
     expect(svg).not.toContain("motif-tile");
   });
