@@ -74,4 +74,13 @@ describe("renderSchematicSvg", () => {
   it("draws the shared axila guideline at the yoke height", () => {
     expect(svg).toContain('class="axila-line" x1="4" y1="28" x2="141" y2="28"');
   });
+
+  it("scopes each title and label with a per-panel class, so CSS can color each panel independently", () => {
+    expect(svg).toContain('class="panel-title back"');
+    expect(svg).toContain('class="panel-title front"');
+    expect(svg).toContain('class="panel-title sleeve"');
+    expect(svg.match(/class="measure-label back"/g)).toHaveLength(4);
+    expect(svg.match(/class="measure-label front"/g)).toHaveLength(4);
+    expect(svg.match(/class="measure-label sleeve"/g)).toHaveLength(2);
+  });
 });
