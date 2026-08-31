@@ -12,6 +12,13 @@ import type { YokeConstructionParams } from "../domain/construction.js";
 import { renderStitchChart } from "../render/stitchChart.js";
 import type { StitchChart, StitchSymbol } from "../render/stitchChart.js";
 
+const FIT_REGULAR = { bodyEaseCm: 8, sleeveEaseCm: 6 };
+const FIT_OVERSIZED = { bodyEaseCm: 20, sleeveEaseCm: 14 };
+
+const LENGTH_CROPPED = { hemLengthCm: 2 };
+const LENGTH_REGULAR = { hemLengthCm: 12.14 };
+const LENGTH_LONG = { hemLengthCm: 30 };
+
 function getNumberInput(id: string): number {
   const el = document.getElementById(id);
   if (!(el instanceof HTMLInputElement)) {
@@ -22,6 +29,13 @@ function getNumberInput(id: string): number {
     throw new Error(`El campo "${id}" debe tener un número válido.`);
   }
   return value;
+}
+
+function setNumberInputValue(id: string, value: number): void {
+  const el = document.getElementById(id);
+  if (el instanceof HTMLInputElement) {
+    el.value = String(value);
+  }
 }
 
 function calculate(): void {
@@ -228,4 +242,82 @@ function setupChartEditor(): void {
   renderChart();
 }
 
+function setupPresetSelectors(): void {
+  const fitSelect = document.getElementById("fit-preset-select");
+  const lengthSelect = document.getElementById("length-preset-select");
+  const bodyEaseInput = document.getElementById("bodyEaseCm");
+  const sleeveEaseInput = document.getElementById("sleeveEaseCm");
+  const hemLengthInput = document.getElementById("hemLengthCm");
+
+  if (fitSelect instanceof HTMLSelectElement) {
+    fitSelect.addEventListener("change", () => {
+      if (fitSelect.value === "regular") {
+        setNumberInputValue("bodyEaseCm", FIT_REGULAR.bodyEaseCm);
+        setNumberInputValue("sleeveEaseCm", FIT_REGULAR.sleeveEaseCm);
+      } else if (fitSelect.value === "oversized") {
+        setNumberInputValue("bodyEaseCm", FIT_OVERSIZED.bodyEaseCm);
+        setNumberInputValue("sleeveEaseCm", FIT_OVERSIZED.sleeveEaseCm);
+      }
+    });
+  }
+
+  if (lengthSelect instanceof HTMLSelectElement) {
+    lengthSelect.addEventListener("change", () => {
+      if (lengthSelect.value === "cropped") {
+        setNumberInputValue("hemLengthCm", LENGTH_CROPPED.hemLengthCm);
+      } else if (lengthSelect.value === "regular") {
+        setNumberInputValue("hemLengthCm", LENGTH_REGULAR.hemLengthCm);
+      } else if (lengthSelect.value === "long") {
+        setNumberInputValue("hemLengthCm", LENGTH_LONG.hemLengthCm);
+      }
+    });
+  }
+
+  const resyncFit = (): void => {
+    if (
+      !(fitSelect instanceof HTMLSelectElement) ||
+      !(bodyEaseInput instanceof HTMLInputElement) ||
+      !(sleeveEaseInput instanceof HTMLInputElement)
+    ) {
+      return;
+    }
+    const bodyEaseCm = bodyEaseInput.valueAsNumber;
+    const sleeveEaseCm = sleeveEaseInput.valueAsNumber;
+    if (bodyEaseCm === FIT_REGULAR.bodyEaseCm && sleeveEaseCm === FIT_REGULAR.sleeveEaseCm) {
+      fitSelect.value = "regular";
+    } else if (bodyEaseCm === FIT_OVERSIZED.bodyEaseCm && sleeveEaseCm === FIT_OVERSIZED.sleeveEaseCm) {
+      fitSelect.value = "oversized";
+    } else {
+      fitSelect.value = "custom";
+    }
+  };
+
+  const resyncLength = (): void => {
+    if (!(lengthSelect instanceof HTMLSelectElement) || !(hemLengthInput instanceof HTMLInputElement)) {
+      return;
+    }
+    const hemLengthCm = hemLengthInput.valueAsNumber;
+    if (hemLengthCm === LENGTH_CROPPED.hemLengthCm) {
+      lengthSelect.value = "cropped";
+    } else if (hemLengthCm === LENGTH_REGULAR.hemLengthCm) {
+      lengthSelect.value = "regular";
+    } else if (hemLengthCm === LENGTH_LONG.hemLengthCm) {
+      lengthSelect.value = "long";
+    } else {
+      lengthSelect.value = "custom";
+    }
+  };
+
+  if (bodyEaseInput) {
+    bodyEaseInput.addEventListener("change", resyncFit);
+  }
+  if (sleeveEaseInput) {
+    sleeveEaseInput.addEventListener("change", resyncFit);
+  }
+  if (hemLengthInput) {
+    hemLengthInput.addEventListener("change", resyncLength);
+  }
+}
+
 setupChartEditor();
+setupPresetSelectors();

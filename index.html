@@ -83,6 +83,16 @@
 
   label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--ink); }
 
+  .preset-select {
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 6px 8px;
+    border-radius: 0;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
   input[type="number"] {
     font-family: var(--font-body);
     font-size: 14px;
@@ -224,6 +234,27 @@
       <div class="field-grid">
         <label>Puntos <input type="number" id="stitchesPer10cm" value="20" step="any"></label>
         <label>Filas <input type="number" id="rowsPer10cm" value="28" step="any"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Ajustes rápidos</legend>
+      <div class="field-grid">
+        <label>Fit
+          <select id="fit-preset-select" class="preset-select">
+            <option value="regular" selected>Regular</option>
+            <option value="oversized">Oversized</option>
+            <option value="custom" hidden>Personalizado</option>
+          </select>
+        </label>
+        <label>Largo
+          <select id="length-preset-select" class="preset-select">
+            <option value="cropped">Cropped</option>
+            <option value="regular" selected>Regular</option>
+            <option value="long">Long</option>
+            <option value="custom" hidden>Personalizado</option>
+          </select>
+        </label>
       </div>
     </fieldset>
 
