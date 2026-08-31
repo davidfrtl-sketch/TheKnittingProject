@@ -19,6 +19,25 @@ const LENGTH_CROPPED = { hemLengthCm: 8 };
 const LENGTH_REGULAR = { hemLengthCm: 12.14 };
 const LENGTH_LONG = { hemLengthCm: 30 };
 
+const SIZE_S = {
+  chestCm: 83.5, neckWidthBackCm: 15, bicepCm: 26, armholeDepthCm: 17,
+  waistCm: 65.5, hipCm: 90.25, wristCm: 11, waistLengthCm: 14, sleeveLengthCm: 43,
+};
+const SIZE_M = {
+  chestCm: 94, neckWidthBackCm: 16, bicepCm: 28, armholeDepthCm: 18.25,
+  waistCm: 73.5, hipCm: 99, wristCm: 12, waistLengthCm: 15, sleeveLengthCm: 43,
+};
+const SIZE_L = {
+  chestCm: 104, neckWidthBackCm: 17, bicepCm: 30.5, armholeDepthCm: 19.75,
+  waistCm: 84, hipCm: 109, wristCm: 13.5, waistLengthCm: 16, sleeveLengthCm: 44.5,
+};
+const SIZE_XL = {
+  chestCm: 114.5, neckWidthBackCm: 18, bicepCm: 34.5, armholeDepthCm: 21,
+  waistCm: 94, hipCm: 119.25, wristCm: 15, waistLengthCm: 17, sleeveLengthCm: 44.5,
+};
+
+type SizePreset = typeof SIZE_S;
+
 function getNumberInput(id: string): number {
   const el = document.getElementById(id);
   if (!(el instanceof HTMLInputElement)) {
@@ -36,6 +55,43 @@ function setNumberInputValue(id: string, value: number): void {
   if (el instanceof HTMLInputElement) {
     el.value = String(value);
   }
+}
+
+function applySizePreset(size: SizePreset): void {
+  setNumberInputValue("chestCm", size.chestCm);
+  setNumberInputValue("neckWidthBackCm", size.neckWidthBackCm);
+  setNumberInputValue("bicepCm", size.bicepCm);
+  setNumberInputValue("armholeDepthCm", size.armholeDepthCm);
+  setNumberInputValue("waistCm", size.waistCm);
+  setNumberInputValue("hipCm", size.hipCm);
+  setNumberInputValue("wristCm", size.wristCm);
+  setNumberInputValue("waistLengthCm", size.waistLengthCm);
+  setNumberInputValue("sleeveLengthCm", size.sleeveLengthCm);
+}
+
+function matchesSizePreset(
+  size: SizePreset,
+  chestCm: number,
+  neckWidthBackCm: number,
+  bicepCm: number,
+  armholeDepthCm: number,
+  waistCm: number,
+  hipCm: number,
+  wristCm: number,
+  waistLengthCm: number,
+  sleeveLengthCm: number
+): boolean {
+  return (
+    size.chestCm === chestCm &&
+    size.neckWidthBackCm === neckWidthBackCm &&
+    size.bicepCm === bicepCm &&
+    size.armholeDepthCm === armholeDepthCm &&
+    size.waistCm === waistCm &&
+    size.hipCm === hipCm &&
+    size.wristCm === wristCm &&
+    size.waistLengthCm === waistLengthCm &&
+    size.sleeveLengthCm === sleeveLengthCm
+  );
 }
 
 function calculate(): void {
@@ -316,6 +372,79 @@ function setupPresetSelectors(): void {
   }
   if (hemLengthInput) {
     hemLengthInput.addEventListener("change", resyncLength);
+  }
+
+  const sizeSelect = document.getElementById("size-preset-select");
+  const chestInput = document.getElementById("chestCm");
+  const neckInput = document.getElementById("neckWidthBackCm");
+  const bicepInput = document.getElementById("bicepCm");
+  const armholeInput = document.getElementById("armholeDepthCm");
+  const waistInput = document.getElementById("waistCm");
+  const hipInput = document.getElementById("hipCm");
+  const wristInput = document.getElementById("wristCm");
+  const waistLengthInput = document.getElementById("waistLengthCm");
+  const sleeveLengthInput = document.getElementById("sleeveLengthCm");
+
+  if (sizeSelect instanceof HTMLSelectElement) {
+    sizeSelect.addEventListener("change", () => {
+      if (sizeSelect.value === "s") {
+        applySizePreset(SIZE_S);
+      } else if (sizeSelect.value === "m") {
+        applySizePreset(SIZE_M);
+      } else if (sizeSelect.value === "l") {
+        applySizePreset(SIZE_L);
+      } else if (sizeSelect.value === "xl") {
+        applySizePreset(SIZE_XL);
+      }
+    });
+  }
+
+  const resyncSize = (): void => {
+    if (
+      !(sizeSelect instanceof HTMLSelectElement) ||
+      !(chestInput instanceof HTMLInputElement) ||
+      !(neckInput instanceof HTMLInputElement) ||
+      !(bicepInput instanceof HTMLInputElement) ||
+      !(armholeInput instanceof HTMLInputElement) ||
+      !(waistInput instanceof HTMLInputElement) ||
+      !(hipInput instanceof HTMLInputElement) ||
+      !(wristInput instanceof HTMLInputElement) ||
+      !(waistLengthInput instanceof HTMLInputElement) ||
+      !(sleeveLengthInput instanceof HTMLInputElement)
+    ) {
+      return;
+    }
+    const current: [number, number, number, number, number, number, number, number, number] = [
+      chestInput.valueAsNumber,
+      neckInput.valueAsNumber,
+      bicepInput.valueAsNumber,
+      armholeInput.valueAsNumber,
+      waistInput.valueAsNumber,
+      hipInput.valueAsNumber,
+      wristInput.valueAsNumber,
+      waistLengthInput.valueAsNumber,
+      sleeveLengthInput.valueAsNumber,
+    ];
+    if (matchesSizePreset(SIZE_S, ...current)) {
+      sizeSelect.value = "s";
+    } else if (matchesSizePreset(SIZE_M, ...current)) {
+      sizeSelect.value = "m";
+    } else if (matchesSizePreset(SIZE_L, ...current)) {
+      sizeSelect.value = "l";
+    } else if (matchesSizePreset(SIZE_XL, ...current)) {
+      sizeSelect.value = "xl";
+    } else {
+      sizeSelect.value = "custom";
+    }
+  };
+
+  for (const input of [
+    chestInput, neckInput, bicepInput, armholeInput,
+    waistInput, hipInput, wristInput, waistLengthInput, sleeveLengthInput,
+  ]) {
+    if (input) {
+      input.addEventListener("change", resyncSize);
+    }
   }
 }
 
