@@ -1,6 +1,7 @@
 import { computeGarmentPlan } from "../engine/garmentPlan.js";
 import type { GarmentPlan } from "../engine/garmentPlan.js";
-import { findMotifSource } from "../engine/motifPlacement.js";
+import { findMotifCandidates } from "../engine/motifPlacement.js";
+import type { MotifSource, MotifSegment } from "../engine/motifPlacement.js";
 import { computeSchematicGeometry } from "../render/schematicGeometry.js";
 import { renderSchematicSvg } from "../render/schematicSvg.js";
 import { renderInstructions } from "../render/instructionsRenderer.js";
@@ -66,8 +67,12 @@ function calculate(): void {
 
     const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, constructionParams);
     const geometry = computeSchematicGeometry(plan, gauge);
-    const motifSource = findMotifSource(plan);
-    const svg = renderSchematicSvg(geometry, currentChart, gauge, motifSource);
+    const candidates = findMotifCandidates(plan);
+    motifCandidates = candidates;
+    const firstCandidate = candidates[0];
+    selectedMotifSource = firstCandidate ?? null;
+    populateMotifSelect(candidates);
+    const svg = renderSchematicSvg(geometry, currentChart, gauge, selectedMotifSource);
     const instructions = renderInstructions(plan);
 
     const svgContainer = document.getElementById("svg-container");
@@ -86,6 +91,9 @@ function calculate(): void {
     resultBox.hidden = true;
     lastPlan = null;
     lastGauge = null;
+    motifCandidates = [];
+    selectedMotifSource = null;
+    populateMotifSelect([]);
     errorBox.hidden = false;
     errorBox.textContent = error instanceof Error ? error.message : String(error);
   }
@@ -137,11 +145,39 @@ function createCrossPreset(): StitchChart {
 let currentChart: StitchChart = createBlankChart(7, 13);
 let lastPlan: GarmentPlan | null = null;
 let lastGauge: Gauge | null = null;
+let motifCandidates: MotifSource[] = [];
+let selectedMotifSource: MotifSource | null = null;
 
 function renderChart(): void {
   const container = document.getElementById("chart-container");
   if (container) {
     container.innerHTML = renderStitchChart(currentChart);
+  }
+}
+
+const SEGMENT_LABELS: Record<MotifSegment, string> = {
+  bodyWaist: "Cintura",
+  bodyHem: "Cadera",
+  sleeve: "Manga",
+};
+
+function populateMotifSelect(candidates: MotifSource[]): void {
+  const wrapper = document.getElementById("motif-select-wrapper");
+  const select = document.getElementById("motif-segment-select");
+  if (!wrapper || !(select instanceof HTMLSelectElement)) {
+    return;
+  }
+  select.innerHTML = "";
+  for (const candidate of candidates) {
+    const option = document.createElement("option");
+    option.value = candidate.segment;
+    option.textContent = `${SEGMENT_LABELS[candidate.segment]} — ${candidate.rowCount} filas, ${candidate.stitches} puntos`;
+    select.appendChild(option);
+  }
+  wrapper.hidden = candidates.length === 0;
+  const first = candidates[0];
+  if (first) {
+    select.value = first.segment;
   }
 }
 
@@ -152,8 +188,7 @@ function refreshSchematicIfCalculated(): void {
     return;
   }
   const geometry = computeSchematicGeometry(lastPlan, lastGauge);
-  const motifSource = findMotifSource(lastPlan);
-  svgContainer.innerHTML = renderSchematicSvg(geometry, currentChart, lastGauge, motifSource);
+  svgContainer.innerHTML = renderSchematicSvg(geometry, currentChart, lastGauge, selectedMotifSource);
 }
 
 function showChartError(error: unknown): void {
@@ -228,4 +263,20 @@ function setupChartEditor(): void {
   renderChart();
 }
 
+function setupMotifSelect(): void {
+  const select = document.getElementById("motif-segment-select");
+  if (!select) {
+    return;
+  }
+  select.addEventListener("change", () => {
+    if (!(select instanceof HTMLSelectElement)) {
+      return;
+    }
+    const match = motifCandidates.find((candidate) => candidate.segment === select.value);
+    selectedMotifSource = match ?? null;
+    refreshSchematicIfCalculated();
+  });
+}
+
 setupChartEditor();
+setupMotifSelect();
