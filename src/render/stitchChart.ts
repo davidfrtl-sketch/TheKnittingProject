@@ -8,7 +8,6 @@ export type StitchChart = {
 
 const CELL_SIZE = 10;
 const MARGIN = 4;
-const LEGEND_HEIGHT = 40;
 
 function renderKnitCell(row: number, col: number, x: number, y: number): string {
   return `<rect class="chart-cell k" data-row="${row}" data-col="${col}" x="${x}" y="${y}" width="${CELL_SIZE}" height="${CELL_SIZE}"></rect>`;
@@ -42,7 +41,7 @@ function renderCableCell(
 export function renderStitchChart(chart: StitchChart): string {
   const { rows, cols, cells } = chart;
   const viewBoxWidth = cols * CELL_SIZE + MARGIN * 2;
-  const viewBoxHeight = rows * CELL_SIZE + MARGIN * 2 + LEGEND_HEIGHT;
+  const viewBoxHeight = rows * CELL_SIZE + MARGIN * 2;
 
   const parts: string[] = [
     `<svg class="stitch-chart" viewBox="0 0 ${viewBoxWidth} ${viewBoxHeight}" role="img" aria-label="Gráfico de punto">`,
@@ -84,21 +83,6 @@ export function renderStitchChart(chart: StitchChart): string {
       col += 1;
     }
   }
-
-  const legendY = MARGIN + rows * CELL_SIZE + 10;
-  const legendItems: [string, string][] = [
-    ["k", "Derecho"],
-    ["p", "Revés"],
-    ["cable-left", "Cruce 2/2 a la izquierda (2 puntos pasan por delante)"],
-    ["cable-right", "Cruce 2/2 a la derecha (2 puntos pasan por detrás)"],
-  ];
-  legendItems.forEach(([symbolClass, label], index) => {
-    const itemY = legendY + index * 8;
-    parts.push(
-      `<rect class="chart-cell ${symbolClass}" x="${MARGIN}" y="${itemY}" width="8" height="6"></rect>`,
-      `<text class="chart-legend-label" x="${MARGIN + 12}" y="${itemY + 5}">${label}</text>`
-    );
-  });
 
   parts.push(`</svg>`);
   return parts.join("\n");

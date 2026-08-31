@@ -213,7 +213,12 @@
   .purl-mark { stroke: var(--ink); stroke-width: 0.6; }
   .cable-cross { stroke: #ffffff; stroke-width: 0.6; }
   .purl-mark, .cable-cross { pointer-events: none; }
-  .chart-legend-label { font-family: var(--font-body); font-size: 4px; fill: var(--ink); }
+  .chart-legend { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+  .chart-legend li { display: flex; align-items: center; gap: 8px; }
+  .chart-legend-swatch { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--ink); flex-shrink: 0; }
+  .chart-legend-swatch.k { background: var(--surface); }
+  .chart-legend-swatch.p { background: var(--paper); }
+  .chart-legend-swatch.cable-left, .chart-legend-swatch.cable-right { background: var(--electric); }
   .chart-controls { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
 </style>
 </head>
@@ -305,6 +310,12 @@
       <button type="button" id="chart-preset-button">Cargar cruz de ejemplo</button>
     </div>
     <div id="chart-container"></div>
+    <ul class="chart-legend">
+      <li><span class="chart-legend-swatch k"></span> Derecho</li>
+      <li><span class="chart-legend-swatch p"></span> Revés</li>
+      <li><span class="chart-legend-swatch cable-left"></span> Cruce 2/2 a la izquierda (2 puntos pasan por delante)</li>
+      <li><span class="chart-legend-swatch cable-right"></span> Cruce 2/2 a la derecha (2 puntos pasan por detrás)</li>
+    </ul>
   </div>
 </div>
 <script type="module" src="./dist/web/app.js"></script>

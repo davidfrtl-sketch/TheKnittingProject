@@ -16,8 +16,8 @@ const chart: StitchChart = {
 describe("renderStitchChart", () => {
   const svg = renderStitchChart(chart);
 
-  it("sizes the viewBox from rows/cols plus the legend", () => {
-    expect(svg).toContain('viewBox="0 0 68 88"');
+  it("sizes the viewBox from rows/cols only (no legend space)", () => {
+    expect(svg).toContain('viewBox="0 0 68 48"');
   });
 
   it("draws row 0 at the bottom of the chart", () => {
@@ -47,10 +47,8 @@ describe("renderStitchChart", () => {
     expect(svg).toContain('class="chart-cell p" data-row="3" data-col="5" x="54" y="4"');
   });
 
-  it("includes the full legend", () => {
-    expect(svg).toContain("Derecho");
-    expect(svg).toContain("Revés");
-    expect(svg).toContain("Cruce 2/2 a la izquierda");
-    expect(svg).toContain("Cruce 2/2 a la derecha");
+  it("does not render a legend inside the SVG", () => {
+    expect(svg).not.toContain("chart-legend-label");
+    expect(svg).not.toContain("Derecho");
   });
 });
