@@ -62,4 +62,27 @@ describe("computeGarmentPlan", () => {
       expect(sleeveTaper.finalStitches).toBe(36);
     }
   });
+
+  it("computes hemFinish as null when no hemFinishParams are given", () => {
+    const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction);
+    expect(plan.hemFinish).toBeNull();
+  });
+
+  it("computes hemFinish when hemFinishParams are given", () => {
+    const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction, {
+      structure: "2x2",
+      lengthCm: 5,
+    });
+    expect(plan.hemFinish).toEqual({ structure: "2x2", rows: 14 });
+  });
+
+  it("propagates computeHemFinish's divisibility error through computeGarmentPlan", () => {
+    const oddHipMeasurements: GarmentMeasurements = { ...measurements, hipCm: 99 };
+    expect(() =>
+      computeGarmentPlan(gauge, ease, oddHipMeasurements, necklineParams, construction, {
+        structure: "2x2",
+        lengthCm: 5,
+      })
+    ).toThrow("necesita un múltiplo de 4");
+  });
 });

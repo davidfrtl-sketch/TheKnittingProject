@@ -10,6 +10,9 @@ import { computeAxilaJoin } from "./axilaJoin.js";
 import type { AxilaJoinResult } from "./axilaJoin.js";
 import { computeTaper } from "./taper.js";
 import type { TaperResult } from "./taper.js";
+import { computeHemFinish } from "./hemFinish.js";
+import type { HemFinishResult } from "./hemFinish.js";
+import type { HemFinishParams } from "../domain/ribbing.js";
 
 export type GarmentPlan = {
   yoke: RaglanYokeResult;
@@ -18,6 +21,7 @@ export type GarmentPlan = {
   bodyHemTaper: TaperResult;
   sleeveLeftTaper: TaperResult;
   sleeveRightTaper: TaperResult;
+  hemFinish: HemFinishResult | null;
 };
 
 export function computeGarmentPlan(
@@ -25,7 +29,8 @@ export function computeGarmentPlan(
   ease: Ease,
   measurements: GarmentMeasurements,
   necklineParams: NecklineParams,
-  constructionParams: YokeConstructionParams
+  constructionParams: YokeConstructionParams,
+  hemFinishParams?: HemFinishParams
 ): GarmentPlan {
   const yoke = computeRaglanYoke(gauge, ease, measurements, necklineParams, constructionParams);
   const axilaJoin = computeAxilaJoin(yoke);
@@ -57,6 +62,10 @@ export function computeGarmentPlan(
     sleeveRows
   );
 
+  const hemFinish = hemFinishParams
+    ? computeHemFinish(gauge, bodyHemTaper.finalStitches, hemFinishParams)
+    : null;
+
   return {
     yoke,
     axilaJoin,
@@ -64,5 +73,6 @@ export function computeGarmentPlan(
     bodyHemTaper,
     sleeveLeftTaper,
     sleeveRightTaper,
+    hemFinish,
   };
 }
