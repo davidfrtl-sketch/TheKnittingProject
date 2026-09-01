@@ -9,6 +9,7 @@ import type { Ease } from "../domain/ease.js";
 import type { GarmentMeasurements } from "../domain/measurements.js";
 import type { NecklineParams } from "../domain/neckline.js";
 import type { YokeConstructionParams } from "../domain/construction.js";
+import type { HemFinishParams } from "../domain/ribbing.js";
 import { renderStitchChart } from "../render/stitchChart.js";
 import type { StitchChart, StitchSymbol } from "../render/stitchChart.js";
 import {
@@ -120,7 +121,19 @@ function calculate(): void {
       initialSleeveStitchesPerSleeve: getNumberInput("initialSleeveStitchesPerSleeve"),
     };
 
-    const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, constructionParams);
+    const hemRibStructureEl = document.getElementById("hem-rib-structure");
+    const hemRibStructureValue =
+      hemRibStructureEl instanceof HTMLSelectElement ? hemRibStructureEl.value : "none";
+
+    let hemFinishParams: HemFinishParams | undefined;
+    if (hemRibStructureValue === "1x1" || hemRibStructureValue === "2x2") {
+      hemFinishParams = {
+        structure: hemRibStructureValue,
+        lengthCm: getNumberInput("hemRibLengthCm"),
+      };
+    }
+
+    const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, constructionParams, hemFinishParams);
     const geometry = computeSchematicGeometry(plan, gauge);
     const motifColumn = computeBackMotifColumn(plan);
     const svg = renderSchematicSvg(geometry, currentChart, gauge, motifColumn);
