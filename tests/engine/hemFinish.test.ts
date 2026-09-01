@@ -17,13 +17,13 @@ describe("computeHemFinish", () => {
 
   it("throws for a 1x1 rib at an odd stitch count", () => {
     expect(() => computeHemFinish(gauge, 213, { structure: "1x1", lengthCm: 5 })).toThrow(
-      "El ruedo tiene 213 puntos, pero el canalé 1x1 necesita un múltiplo de 2."
+      "No se puede aplicar el canalé 1x1: hay 213 puntos, que no es múltiplo de 2."
     );
   });
 
   it("throws for a 2x2 rib at a stitch count that's even but not a multiple of 4", () => {
     expect(() => computeHemFinish(gauge, 214, { structure: "2x2", lengthCm: 5 })).toThrow(
-      "El ruedo tiene 214 puntos, pero el canalé 2x2 necesita un múltiplo de 4."
+      "No se puede aplicar el canalé 2x2: hay 214 puntos, que no es múltiplo de 4."
     );
   });
 

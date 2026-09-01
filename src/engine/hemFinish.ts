@@ -16,7 +16,7 @@ export function computeHemFinish(
   const repeat = RIB_STITCH_REPEAT[params.structure];
   if (combinedFinalStitches % repeat !== 0) {
     throw new Error(
-      `El ruedo tiene ${combinedFinalStitches} puntos, pero el canalé ${params.structure} necesita un múltiplo de ${repeat}.`
+      `No se puede aplicar el canalé ${params.structure}: hay ${combinedFinalStitches} puntos, que no es múltiplo de ${repeat}.`
     );
   }
 

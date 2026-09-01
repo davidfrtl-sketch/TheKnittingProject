@@ -83,6 +83,36 @@ describe("computeGarmentPlan", () => {
         structure: "2x2",
         lengthCm: 5,
       })
-    ).toThrow("necesita un múltiplo de 4");
+    ).toThrow("no es múltiplo de 4");
+  });
+
+  it("computes cuffFinish as null when no cuffFinishParams are given", () => {
+    const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction);
+    expect(plan.cuffFinish).toBeNull();
+  });
+
+  it("computes cuffFinish when cuffFinishParams are given, using the sleeve taper's shared final stitch count", () => {
+    const plan = computeGarmentPlan(
+      gauge,
+      ease,
+      measurements,
+      necklineParams,
+      construction,
+      undefined,
+      { structure: "2x2", lengthCm: 5 }
+    );
+    expect(plan.sleeveLeftTaper.finalStitches).toBe(36);
+    expect(plan.sleeveRightTaper.finalStitches).toBe(36);
+    expect(plan.cuffFinish).toEqual({ structure: "2x2", rows: 14 });
+  });
+
+  it("propagates computeHemFinish's divisibility error through computeGarmentPlan for the cuff", () => {
+    const oddWristMeasurements: GarmentMeasurements = { ...measurements, wristCm: 13 };
+    expect(() =>
+      computeGarmentPlan(gauge, ease, oddWristMeasurements, necklineParams, construction, undefined, {
+        structure: "2x2",
+        lengthCm: 5,
+      })
+    ).toThrow("no es múltiplo de 4");
   });
 });

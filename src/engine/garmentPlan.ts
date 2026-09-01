@@ -22,6 +22,7 @@ export type GarmentPlan = {
   sleeveLeftTaper: TaperResult;
   sleeveRightTaper: TaperResult;
   hemFinish: HemFinishResult | null;
+  cuffFinish: HemFinishResult | null;
 };
 
 export function computeGarmentPlan(
@@ -30,7 +31,8 @@ export function computeGarmentPlan(
   measurements: GarmentMeasurements,
   necklineParams: NecklineParams,
   constructionParams: YokeConstructionParams,
-  hemFinishParams?: HemFinishParams
+  hemFinishParams?: HemFinishParams,
+  cuffFinishParams?: HemFinishParams
 ): GarmentPlan {
   const yoke = computeRaglanYoke(gauge, ease, measurements, necklineParams, constructionParams);
   const axilaJoin = computeAxilaJoin(yoke);
@@ -66,6 +68,10 @@ export function computeGarmentPlan(
     ? computeHemFinish(gauge, bodyHemTaper.finalStitches, hemFinishParams)
     : null;
 
+  const cuffFinish = cuffFinishParams
+    ? computeHemFinish(gauge, sleeveLeftTaper.finalStitches, cuffFinishParams)
+    : null;
+
   return {
     yoke,
     axilaJoin,
@@ -74,5 +80,6 @@ export function computeGarmentPlan(
     sleeveLeftTaper,
     sleeveRightTaper,
     hemFinish,
+    cuffFinish,
   };
 }
