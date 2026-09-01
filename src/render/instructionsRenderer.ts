@@ -110,6 +110,20 @@ function renderTaperStage(label: string, startStitches: number, taper: TaperResu
   );
 }
 
+function renderHemFinishSection(plan: GarmentPlan): string | null {
+  if (!plan.hemFinish) {
+    return null;
+  }
+  const { structure, rows } = plan.hemFinish;
+  const stitches = plan.bodyHemTaper.finalStitches;
+  const patternText = structure === "1x1" ? "*1 derecho, 1 revés*" : "*2 derecho, 2 revés*";
+  const rowsWord = rows === 1 ? "vuelta" : "vueltas";
+  return (
+    `Canalé ${structure} (${stitches} puntos, ${rows} ${rowsWord}): ${patternText}, repetir hasta el final. ` +
+    `Cerrar puntos.`
+  );
+}
+
 export function renderInstructions(plan: GarmentPlan): string {
   const sections = [
     renderCastOnSection(plan),
@@ -120,5 +134,9 @@ export function renderInstructions(plan: GarmentPlan): string {
     renderTaperStage("Manga izquierda", plan.axilaJoin.sleeveLeftStartStitches, plan.sleeveLeftTaper),
     renderTaperStage("Manga derecha", plan.axilaJoin.sleeveRightStartStitches, plan.sleeveRightTaper),
   ];
+  const hemFinishSection = renderHemFinishSection(plan);
+  if (hemFinishSection) {
+    sections.push(hemFinishSection);
+  }
   return sections.join("\n\n");
 }

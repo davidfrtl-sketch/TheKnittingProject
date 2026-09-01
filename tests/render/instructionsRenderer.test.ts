@@ -123,3 +123,26 @@ describe("renderInstructions with a waist target equal to the axila-join baselin
     );
   });
 });
+
+describe("renderInstructions with a hem finish", () => {
+  const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction, {
+    structure: "1x1",
+    lengthCm: 10,
+  });
+  const text = renderInstructions(plan);
+
+  it("describes the 1x1 rib with the correct stitch and row counts", () => {
+    expect(text).toContain(
+      "Canalé 1x1 (212 puntos, 28 vueltas): *1 derecho, 1 revés*, repetir hasta el final. Cerrar puntos."
+    );
+  });
+});
+
+describe("renderInstructions without a hem finish", () => {
+  const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction);
+  const text = renderInstructions(plan);
+
+  it("omits any hem finish section", () => {
+    expect(text).not.toContain("Canalé");
+  });
+});
