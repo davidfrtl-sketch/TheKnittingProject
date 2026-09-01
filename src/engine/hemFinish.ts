@@ -20,8 +20,15 @@ export function computeHemFinish(
     );
   }
 
+  const rows = rowsForCm(gauge, params.lengthCm);
+  if (rows < 1) {
+    throw new Error(
+      `El largo del canalé (${params.lengthCm}cm) da ${rows} vueltas — tiene que ser al menos 1 vuelta.`
+    );
+  }
+
   return {
     structure: params.structure,
-    rows: rowsForCm(gauge, params.lengthCm),
+    rows,
   };
 }

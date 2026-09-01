@@ -1,6 +1,7 @@
 import type { GarmentPlan } from "../engine/garmentPlan.js";
 import type { RaglanYokeRoundEvent } from "../engine/raglanYoke.js";
 import type { TaperResult } from "../engine/taper.js";
+import { RIB_PATTERN_TEXT } from "../domain/ribbing.js";
 
 function isFrontJoinEvent(
   event: RaglanYokeRoundEvent
@@ -116,7 +117,7 @@ function renderHemFinishSection(plan: GarmentPlan): string | null {
   }
   const { structure, rows } = plan.hemFinish;
   const stitches = plan.bodyHemTaper.finalStitches;
-  const patternText = structure === "1x1" ? "*1 derecho, 1 revés*" : "*2 derecho, 2 revés*";
+  const patternText = RIB_PATTERN_TEXT[structure];
   const rowsWord = rows === 1 ? "vuelta" : "vueltas";
   return (
     `Canalé ${structure} (${stitches} puntos, ${rows} ${rowsWord}): ${patternText}, repetir hasta el final. ` +

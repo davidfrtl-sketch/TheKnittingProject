@@ -26,4 +26,10 @@ describe("computeHemFinish", () => {
       "El ruedo tiene 214 puntos, pero el canalé 2x2 necesita un múltiplo de 4."
     );
   });
+
+  it("throws when lengthCm produces less than 1 row", () => {
+    expect(() => computeHemFinish(gauge, 212, { structure: "1x1", lengthCm: 0 })).toThrow(
+      "El largo del canalé (0cm) da 0 vueltas — tiene que ser al menos 1 vuelta."
+    );
+  });
 });

@@ -39,7 +39,11 @@ Explícitamente fuera de alcance:
 - Canalé torcido, sin-canalé como opción explícita, borde enrollado, i-cord.
 - Cambios al esquema SVG — la silueta no cambia (el canalé no altera
   ancho, solo agrega filas al final), así que solo cambian las
-  instrucciones escritas.
+  instrucciones escritas. Nota: esto es parcial — el ancho efectivamente
+  no cambia, pero el alto del esquema (`schematicGeometry.ts`, `hemLengthCm`)
+  se calcula solo a partir de las filas del entallado, así que cuando el
+  canalé está activo la prenda real queda más larga que lo que dibuja el
+  esquema. Se acepta como hueco conocido para una pasada futura.
 
 ## Modelo de datos
 
