@@ -146,3 +146,26 @@ describe("renderInstructions without a hem finish", () => {
     expect(text).not.toContain("Canalé");
   });
 });
+
+describe("renderInstructions with a cuff finish", () => {
+  const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction, undefined, {
+    structure: "1x1",
+    lengthCm: 10,
+  });
+  const text = renderInstructions(plan);
+
+  it("describes the shared cuff rib with the correct stitch and row counts", () => {
+    expect(text).toContain(
+      "Puño (ambas mangas) — canalé 1x1 (36 puntos, 28 vueltas): *1 derecho, 1 revés*, repetir hasta el final. Cerrar puntos."
+    );
+  });
+});
+
+describe("renderInstructions without a cuff finish", () => {
+  const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, construction);
+  const text = renderInstructions(plan);
+
+  it("omits any cuff finish section", () => {
+    expect(text).not.toContain("Puño");
+  });
+});

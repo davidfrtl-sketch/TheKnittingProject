@@ -125,6 +125,20 @@ function renderHemFinishSection(plan: GarmentPlan): string | null {
   );
 }
 
+function renderCuffFinishSection(plan: GarmentPlan): string | null {
+  if (!plan.cuffFinish) {
+    return null;
+  }
+  const { structure, rows } = plan.cuffFinish;
+  const stitches = plan.sleeveLeftTaper.finalStitches;
+  const patternText = RIB_PATTERN_TEXT[structure];
+  const rowsWord = rows === 1 ? "vuelta" : "vueltas";
+  return (
+    `Puño (ambas mangas) — canalé ${structure} (${stitches} puntos, ${rows} ${rowsWord}): ` +
+    `${patternText}, repetir hasta el final. Cerrar puntos.`
+  );
+}
+
 export function renderInstructions(plan: GarmentPlan): string {
   const sections = [
     renderCastOnSection(plan),
@@ -138,6 +152,10 @@ export function renderInstructions(plan: GarmentPlan): string {
   const hemFinishSection = renderHemFinishSection(plan);
   if (hemFinishSection) {
     sections.push(hemFinishSection);
+  }
+  const cuffFinishSection = renderCuffFinishSection(plan);
+  if (cuffFinishSection) {
+    sections.push(cuffFinishSection);
   }
   return sections.join("\n\n");
 }
