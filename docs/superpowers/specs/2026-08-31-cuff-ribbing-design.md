@@ -28,9 +28,14 @@ por una divergencia entre mangas.
 ## Alcance
 
 Incluido:
-- Reutiliza `RibStructure`, `HemFinishParams`, `computeHemFinish` sin
-  ningún cambio — cero código nuevo en `src/domain/ribbing.ts` ni
-  `src/engine/hemFinish.ts`.
+- Reutiliza `RibStructure`, `HemFinishParams`, `computeHemFinish` — sin
+  cambios de tipos ni de lógica. Un solo ajuste necesario: el mensaje de
+  error de `computeHemFinish` decía literalmente "El ruedo tiene..."
+  hardcodeado, lo cual queda mal cuando el problema en realidad está en
+  la manga/muñeca. Se generaliza a un mensaje sin contexto de pieza:
+  `` `No se puede aplicar el canalé ${params.structure}: hay ${combinedFinalStitches} puntos, que no es múltiplo de ${repeat}.` ``
+  (antes de agregar el segundo consumidor, no después — para que el
+  puño nunca llegue a mostrar el texto equivocado).
 - `computeGarmentPlan` gana un **séptimo parámetro opcional**
   `cuffFinishParams?: HemFinishParams`, y `GarmentPlan` gana
   `cuffFinish: HemFinishResult | null` — mismo patrón que `hemFinish`,
