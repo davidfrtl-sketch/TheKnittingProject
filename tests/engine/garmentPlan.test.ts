@@ -115,4 +115,18 @@ describe("computeGarmentPlan", () => {
       })
     ).toThrow("no es múltiplo de 4");
   });
+
+  it("computes both hemFinish and cuffFinish when both params are given", () => {
+    const plan = computeGarmentPlan(
+      gauge,
+      ease,
+      measurements,
+      necklineParams,
+      construction,
+      { structure: "1x1", lengthCm: 10 },
+      { structure: "2x2", lengthCm: 5 }
+    );
+    expect(plan.hemFinish).toEqual({ structure: "1x1", rows: 28 });
+    expect(plan.cuffFinish).toEqual({ structure: "2x2", rows: 14 });
+  });
 });

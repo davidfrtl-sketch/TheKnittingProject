@@ -11,19 +11,20 @@ export type HemFinishResult = {
 export function computeHemFinish(
   gauge: Gauge,
   combinedFinalStitches: number,
-  params: HemFinishParams
+  params: HemFinishParams,
+  label: string
 ): HemFinishResult {
   const repeat = RIB_STITCH_REPEAT[params.structure];
   if (combinedFinalStitches % repeat !== 0) {
     throw new Error(
-      `No se puede aplicar el canalé ${params.structure}: hay ${combinedFinalStitches} puntos, que no es múltiplo de ${repeat}.`
+      `No se puede aplicar el canalé ${params.structure} al ${label}: hay ${combinedFinalStitches} puntos, que no es múltiplo de ${repeat}.`
     );
   }
 
   const rows = rowsForCm(gauge, params.lengthCm);
   if (rows < 1) {
     throw new Error(
-      `El largo del canalé (${params.lengthCm}cm) da ${rows} vueltas — tiene que ser al menos 1 vuelta.`
+      `El largo del canalé del ${label} (${params.lengthCm}cm) da ${rows} vueltas — tiene que ser al menos 1 vuelta.`
     );
   }
 

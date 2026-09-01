@@ -12,8 +12,8 @@ Software abierto de diseño de patrones de sweaters tejidos a mano (dos agujas).
 
 Por ahora este repositorio implementa el cálculo del canesú raglan (escote
 redondo, talla única) y el entallado del cuerpo y la manga. También soporta
-opcionalmente un canalé de ruedo (1x1 o 2x2), la primera técnica de
-terminación/borde del proyecto más allá del cálculo puro de forma. Los dos
+opcionalmente un canalé de ruedo y de puño (1x1 o 2x2), la primera técnica
+de terminación/borde del proyecto más allá del cálculo puro de forma. Los dos
 renderizadores de salida ya existen (`src/render/`): instrucciones escritas
 y gráfico de puntos (símbolos de punto); el grading multi-talla todavía
 está pendiente.

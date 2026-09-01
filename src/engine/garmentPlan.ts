@@ -65,11 +65,11 @@ export function computeGarmentPlan(
   );
 
   const hemFinish = hemFinishParams
-    ? computeHemFinish(gauge, bodyHemTaper.finalStitches, hemFinishParams)
+    ? computeHemFinish(gauge, bodyHemTaper.finalStitches, hemFinishParams, "ruedo")
     : null;
 
   const cuffFinish = cuffFinishParams
-    ? computeHemFinish(gauge, sleeveLeftTaper.finalStitches, cuffFinishParams)
+    ? computeHemFinish(gauge, sleeveLeftTaper.finalStitches, cuffFinishParams, "puño")
     : null;
 
   return {

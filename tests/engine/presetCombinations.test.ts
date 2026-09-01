@@ -86,3 +86,49 @@ describe("preset combinations succeed at the tool's default gauge", () => {
     ).not.toThrow();
   });
 });
+
+describe("cuff 2x2 rib is a known limitation for some sizes (documented, not fixed)", () => {
+  const cuffParams = { structure: "2x2" as const, lengthCm: 5 };
+
+  function planFor(size: typeof SIZE_S) {
+    const ease: Ease = { bodyEaseCm: FIT_REGULAR.bodyEaseCm, sleeveEaseCm: FIT_REGULAR.sleeveEaseCm };
+    const measurements: GarmentMeasurements = {
+      chestCm: size.chestCm,
+      neckWidthBackCm: size.neckWidthBackCm,
+      bicepCm: size.bicepCm,
+      armholeDepthCm: size.armholeDepthCm,
+      waistCm: size.waistCm,
+      hipCm: size.hipCm,
+      wristCm: size.wristCm,
+      waistLengthCm: size.waistLengthCm,
+      hemLengthCm: LENGTH_REGULAR.hemLengthCm,
+      sleeveLengthCm: size.sleeveLengthCm,
+    };
+    return () =>
+      computeGarmentPlan(
+        gauge,
+        ease,
+        measurements,
+        necklineParams,
+        construction,
+        undefined,
+        cuffParams
+      );
+  }
+
+  it("S: throws (34 stitches, not a multiple of 4)", () => {
+    expect(planFor(SIZE_S)).toThrow("no es múltiplo de 4");
+  });
+
+  it("M: succeeds (36 stitches, a multiple of 4)", () => {
+    expect(planFor(SIZE_M)).not.toThrow();
+  });
+
+  it("L: throws (38 stitches, not a multiple of 4)", () => {
+    expect(planFor(SIZE_L)).toThrow("no es múltiplo de 4");
+  });
+
+  it("XL: throws (42 stitches, not a multiple of 4)", () => {
+    expect(planFor(SIZE_XL)).toThrow("no es múltiplo de 4");
+  });
+});

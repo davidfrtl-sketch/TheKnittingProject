@@ -169,3 +169,25 @@ describe("renderInstructions without a cuff finish", () => {
     expect(text).not.toContain("Puño");
   });
 });
+
+describe("renderInstructions with both a hem finish and a cuff finish", () => {
+  const plan = computeGarmentPlan(
+    gauge,
+    ease,
+    measurements,
+    necklineParams,
+    construction,
+    { structure: "1x1", lengthCm: 10 },
+    { structure: "2x2", lengthCm: 5 }
+  );
+  const text = renderInstructions(plan);
+
+  it("includes both the hem and cuff sections with independent structures", () => {
+    expect(text).toContain("Canalé 1x1 (212 puntos, 28 vueltas)");
+    expect(text).toContain("Puño (ambas mangas) — canalé 2x2 (36 puntos, 14 vueltas)");
+  });
+
+  it("orders the hem section before the cuff section", () => {
+    expect(text.indexOf("Canalé 1x1")).toBeLessThan(text.indexOf("Puño (ambas mangas)"));
+  });
+});
