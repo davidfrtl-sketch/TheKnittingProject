@@ -133,7 +133,27 @@ function calculate(): void {
       };
     }
 
-    const plan = computeGarmentPlan(gauge, ease, measurements, necklineParams, constructionParams, hemFinishParams);
+    const cuffRibStructureEl = document.getElementById("cuff-rib-structure");
+    const cuffRibStructureValue =
+      cuffRibStructureEl instanceof HTMLSelectElement ? cuffRibStructureEl.value : "none";
+
+    let cuffFinishParams: HemFinishParams | undefined;
+    if (cuffRibStructureValue === "1x1" || cuffRibStructureValue === "2x2") {
+      cuffFinishParams = {
+        structure: cuffRibStructureValue,
+        lengthCm: getNumberInput("cuffRibLengthCm"),
+      };
+    }
+
+    const plan = computeGarmentPlan(
+      gauge,
+      ease,
+      measurements,
+      necklineParams,
+      constructionParams,
+      hemFinishParams,
+      cuffFinishParams
+    );
     const geometry = computeSchematicGeometry(plan, gauge);
     const motifColumn = computeBackMotifColumn(plan);
     const svg = renderSchematicSvg(geometry, currentChart, gauge, motifColumn);
